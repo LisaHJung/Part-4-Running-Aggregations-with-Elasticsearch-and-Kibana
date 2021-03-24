@@ -23,13 +23,12 @@ Workshop objectives:
 
 [Elastic America Virtual Chapter](https://community.elastic.co/amer-virtual/): Want to attend live workshops? Join the Elastic Americal Virtual Chapter to get the deets!
 
-## Review from Workshop Part 2
+## Review from Workshop Part 3
 There are two main ways to search in Elasticsearch:
 1) `Queries`retrieve documents that match the specified criteria. 
 2) `Aggregations` present the summary of your data as metrics, statistics, and other analytics.  
 
-### Search queries
-#### Get information about documents in an index
+### Get information about documents in an index
 The following query will retrieve all documents that exist in the specified index. This query is a great way to explore the structure and content of your document. 
 
 Syntax: 
@@ -38,20 +37,181 @@ GET Enter_name_of_the_index_here/_search
 ```
 Example: 
 ```
-GET news_headlines/_search
+GET ecommerce_data/_search
 ```
 Expected response from Elasticsearch:
 
 Elasticsearch displays a number of hits and a sample of 10 search results by default.  The field "_ source"(line 22) lists all fields or content of the document.
 
-![image](https://user-images.githubusercontent.com/60980933/105432767-8c216700-5c15-11eb-9ea2-ef74a3bc5f1b.png)
+![image](https://user-images.githubusercontent.com/60980933/112375185-9c52d280-8ca8-11eb-9952-16f24171dfbd.png)
 
 ### Aggregations Request
-#### Analyze the data to show the categories of news headlines in our dataset
+#### Analyze the data to show the the sum of number of items sold
+
 Syntax:
 ```
 GET Enter_name_of_the_index_here/_search
 {
+  "aggregations": {
+    "Name your aggregation here": {
+      "Specify aggregation type here": {
+        "field": "Name the field you want to aggregate here"
+      }
+    }
+  }
+}
+```
+Example:
+```
+GET ecommerce_data/_search
+{
+  "size": 0,
+  "aggs": {
+    "total_number_of_items_sold": {
+      "sum": {
+        "field":"Quantity"
+      }
+    }
+    
+  }
+}
+```
+Expected response from Elasticsearch:
+
+When you minimize hits(line 10), you will see the aggregations report we named by_category. This report displays all categories that exist in our datset as well as the number of documents that fall under each category. 
+
+![image](https://user-images.githubusercontent.com/60980933/112375663-2438dc80-8ca9-11eb-9d69-f9d1aeacae12.png)
+
+#### Analyze the data to show the lowest price of an item 
+Syntax:
+```
+```
+Example: 
+```
+GET ecommerce_data/_search
+{
+  "aggs": {
+    "lowest_price": {
+      "min": {
+        "field":"UnitPrice"
+      }
+    }
+    
+  }
+}
+```
+
+#### Analyze the data to show the highest price of an item 
+Syntax:
+```
+```
+Example: 
+```
+GET ecommerce_data/_search
+{
+  "aggs": {
+    "lowest_price": {
+      "max": {
+        "field":"UnitPrice"
+      }
+    }
+    
+  }
+}
+```
+
+#### Analyze the data to show the average price of items in the inventory 
+Syntax:
+```
+```
+Example: 
+```
+GET ecommerce_data/_search
+{
+  "aggs": {
+    "lowest_price": {
+      "avg": {
+        "field":"UnitPrice"
+      }
+    }
+    
+  }
+}
+```
+#### Stats Aggregation: Analyze the data to show all the main metrics(min, max, sum, avg).  
+```
+GET ecommerce_data/_search
+{
+  "size": 0,
+  "aggs": {
+    "price": {
+      "stats": {
+        "field": "UnitPrice"
+      }
+    }
+  }
+}
+```
+
+#### The Percentiles Aggregations
+Example: 
+```
+GET ecommerce_data/_search
+{
+  "size": 0,
+  "aggs": {
+    "unit_price_percentiles": {
+      "percentiles": {
+        "field":"UnitPrice",
+        "percents": [
+          25,
+          50,
+          75
+        ]
+      }
+    }
+  }
+}
+```
+
+Expected response from Elasticsearch:
+![image](https://user-images.githubusercontent.com/60980933/112379835-3e28ee00-8cae-11eb-8d01-dda32a3960f3.png)
+
+#### The Cardinality Aggregations
+The cardinality aggregation calculates the count of distinct values for a given field. You should be aware that this count is approximate. 
+
+Example: 
+```
+GET ecommerce_data/_search
+{
+  "size": 0,
+  "aggs": {
+    "number_of_customers": {
+      "cardinality": {
+        "field":"CustomerID"
+      }
+    }
+  }
+}
+```
+Expected response from Elasticsearch: 
+![image](https://user-images.githubusercontent.com/60980933/112384174-b34af200-8cb3-11eb-8d4c-1eb3f068f81f.png)
+
+### Aggregations Scope
+#### Analyze the data to show the the sum of number of items sold in France
+
+In the previous example, the aggregation was run on all the documents of the indices matching the index ecommerce_data. What happens if you want to run an aggregation on just a subset of the documents? You can add a query clause to an aggregation to limit the scope of the query. The metric will then be computed on the set of documents defined by your query.
+
+For example, to answer the question: “What is the sum of number of items sold in France?” you need to combine a query and an aggregation.
+
+Syntax:
+```
+GET Enter_name_of_the_index_here/_search
+{
+  "size": 0,
+  "query": {
+    "Enter match or match_phrase here": { "Enter the name of the field": "Enter the value you are looking for" }
+  },
   "aggregations": {
     "Name your aggregation here": {
       "Specify aggregation type here": {
@@ -62,42 +222,25 @@ GET Enter_name_of_the_index_here/_search
   }
 }
 ```
-Example:
+Example: 
 ```
-GET news_headlines/_search
+GET ecommerce_data/_search
 {
-  "aggregations": {
-    "by_category": {
-      "terms": {
-        "field": "category",
-        "size": 100
-      }
-    }
-  }
-}
-```
-Expected response from Elasticsearch:
-
-When you minimize hits(line 10), you will see the aggregations report we named by_category. This report displays all categories that exist in our datset as well as the number of documents that fall under each category. 
-
-![image](https://user-images.githubusercontent.com/60980933/105434428-cc361900-5c18-11eb-9db7-e7441ac5a1ac.png)
-
-## Full Text Queries
-### Searching for search terms
-
-The `match query` is a standard query for performing a full text search. This query retrieves documents that contain the search terms in any way, shape or form. The order and the proximity in which the search terms are found(i.e. phrases) are not considered as a priority. 
-
-Syntax:
-```
-GET Enter_name_of_index_here/_search
-{
+  "size": 0,
   "query": {
     "match": {
-      "Specify the field you want to search":{
-        "query":"Enter search terms"
-   }
+      "Country": "France"
+      
+    }
+  },
+  "aggs": {
+    "france_total_number_of_items_sold": {
+      "sum": {
+        "field":"Quantity"
+      }
+    }
+    
   }
- }
 }
 ```
 ###  Searching for a phrase
