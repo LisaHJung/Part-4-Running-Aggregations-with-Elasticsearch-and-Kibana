@@ -5,7 +5,9 @@ Welcome to the Beginner's Crash Course to Elastic Stack!
 This repo contains all resources shared during Part 4: Running Aggregations with Elasticsearch and Kibana.
 
 Workshop objectives:
-
+- run metric aggregations
+- run buckets aggregations
+- combined aggregations
 
 ## Resources
 
@@ -19,7 +21,7 @@ Workshop objectives:
 
 [Presentation]()
 
-[Dataset](https://www.kaggle.com/rmisra/news-category-dataset) from Kaggle used for workshop
+[Dataset](https://www.kaggle.com/carrie1/ecommerce-data) from Kaggle used for workshop
 
 [Elastic America Virtual Chapter](https://community.elastic.co/amer-virtual/): Want to attend live workshops? Join the Elastic Americal Virtual Chapter to get the deets!
 
