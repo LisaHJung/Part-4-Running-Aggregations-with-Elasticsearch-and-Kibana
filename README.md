@@ -47,7 +47,7 @@ Elasticsearch displays a number of hits and a sample of 10 search results by def
 
 ![image](https://user-images.githubusercontent.com/60980933/112375185-9c52d280-8ca8-11eb-9952-16f24171dfbd.png)
 
-### Aggregations Request
+### Aggregations Request Syntax
 Syntax:
 ```
 GET Enter_name_of_the_index_here/_search
@@ -61,7 +61,9 @@ GET Enter_name_of_the_index_here/_search
   }
 }
 ```
-#### Analyze the data to get the `sum` of all unit price
+
+### Metric Aggregations 
+#### Analyze the data to get the `sum` of all unit prices in the data set
 
 Syntax:
 ```
@@ -95,7 +97,7 @@ By default, Elasticsearch will return top 10 most relevant documents.
 
 ![image](https://user-images.githubusercontent.com/60980933/112508582-4d16ab80-8d55-11eb-93c1-09e956a14aaf.png)
 
-When you minimize hits(line 10), you will see the aggregations report we named sum_unit_price. This report displays the sum of all unit prices listed in our data set. 
+When you minimize hits(red box- line 10), you will see the aggregations report we named sum_unit_price(image below). This report displays the sum of all unit prices listed in our data set. 
 
 ![image](https://user-images.githubusercontent.com/60980933/112512282-da0f3400-8d58-11eb-892d-0f577c9247fd.png)
 
@@ -222,7 +224,8 @@ GET e_commerce/_search
 Expected response from Elasticsearch: 
 
 Average unit price in our invetory is around 4.39.
-![image](https://user-images.githubusercontent.com/60980933/112511759-58b7a180-8d58-11eb-811f-8d6cb852c220.png
+
+![image](https://user-images.githubusercontent.com/60980933/112511759-58b7a180-8d58-11eb-811f-8d6cb852c220.png)
 
 #### `Stats` Aggregation: Analyze the data to show all the main metrics(count, min, max, avg, sum) in one request. 
 Syntax:
