@@ -47,7 +47,7 @@ Elasticsearch displays a number of hits and a sample of 10 search results by def
 
 ![image](https://user-images.githubusercontent.com/60980933/112375185-9c52d280-8ca8-11eb-9952-16f24171dfbd.png)
 
-### Aggregations Request Syntax
+## Aggregations Request Syntax
 Syntax:
 ```
 GET Enter_name_of_the_index_here/_search
@@ -63,7 +63,9 @@ GET Enter_name_of_the_index_here/_search
 ```
 
 ### Metric Aggregations 
-#### Analyze the data to get the `sum` of all unit prices in the data set
+`Metric` aggregations compute a value based on a set of documents. It can be used to calculate values of `min`, `max`, `avg`, `sum`, `percentiles` and unique count(`cardinality`). 
+
+#### Analyze the data to compute the `sum` of all unit prices in the data set
 
 Syntax:
 ```
@@ -123,7 +125,7 @@ Now you do not need to minimize hits to get to the aggregations report! We will 
 
 ![image](https://user-images.githubusercontent.com/60980933/112512473-032fc480-8d59-11eb-8c42-d3cfa7d23632.png)
 
-#### Analyze the data to show the lowest(`min`) unit price of an item 
+#### Analyze the data to compute the lowest(`min`) unit price of an item 
 
 Syntax:
 ```
@@ -158,7 +160,7 @@ Expected response from Elasticsearch:
 The lowest unit price of an item is 1.01. 
 ![image](https://user-images.githubusercontent.com/60980933/112509885-869be680-8d56-11eb-9c2e-5935ff7437e8.png)
 
-#### Analyze the data to show the highest(`max`) unit price of an item 
+#### Analyze the data to compute the highest(`max`) unit price of an item 
 Syntax:
 ```
 GET Enter_name_of_the_index_here/_search
@@ -192,7 +194,7 @@ The highest unit price of an item is 498.79.
 
 ![image](https://user-images.githubusercontent.com/60980933/112511189-cca57a00-8d57-11eb-9ab3-809b2a410636.png)
 
-#### Analyze the data to show the `average` unit price of items in the inventory 
+#### Analyze the data to compute the `average` unit price of items in the inventory 
 Syntax:
 ```
 GET Enter_name_of_the_index_here/_search
@@ -227,7 +229,7 @@ Average unit price in our invetory is around 4.39.
 
 ![image](https://user-images.githubusercontent.com/60980933/112511759-58b7a180-8d58-11eb-811f-8d6cb852c220.png)
 
-#### `Stats` Aggregation: Analyze the data to show all the main metrics(count, min, max, avg, sum) in one request. 
+#### `Stats` Aggregation: Analyze the data to compute all the main metrics(count, min, max, avg, sum) in one request. 
 Syntax:
 ```
 GET Enter_name_of_the_index_here/_search
@@ -263,9 +265,32 @@ Stats aggregation will yield the values of `count`(total number of unit prices i
 ![image](https://user-images.githubusercontent.com/60980933/112512994-84875700-8d59-11eb-938a-fb7c61aee2b2.png)
 
 #### The Percentiles Aggregations
+The percentiles aggregations computes the percentile values of data set. 
+What if you wanted to know what percentage of your data set falls under certain values?
+i.e. What unit price fall under 25%, 50%, 75% percentile? 
+
+Syntax:
+```
+GET Enter_name_of_the_index_here/_search
+{
+  "size": 0,
+  "aggs": {
+     "Name your aggregation here": {
+      "percentiles": {
+        "field":"Name the field you want to aggregate here",
+        "percents": [
+          "List the percentile",
+          "List the percentile",
+          "List the percentile"
+        ]
+      }
+    }
+  }
+}
+```
 Example: 
 ```
-GET ecommerce_data/_search
+GET e_commerce/_search
 {
   "size": 0,
   "aggs": {
@@ -284,14 +309,19 @@ GET ecommerce_data/_search
 ```
 
 Expected response from Elasticsearch:
-![image](https://user-images.githubusercontent.com/60980933/112379835-3e28ee00-8cae-11eb-8d01-dda32a3960f3.png)
+![image](https://user-images.githubusercontent.com/60980933/112532003-e81b7f80-8d6d-11eb-9f1f-e34145bced86.png)
+
+25% of unit price values are less than 1.65.
+50% of unit price values are less than 2.89.
+75% of unit price values are less than 4.95.
 
 #### The Cardinality Aggregations
-The cardinality aggregation calculates the count of distinct values for a given field. You should be aware that this count is approximate. 
+The cardinality aggregation computes the count of unique values for a given field. 
+Please note that the count is approximated.
 
 Example: 
 ```
-GET ecommerce_data/_search
+GET e_commerce/_search
 {
   "size": 0,
   "aggs": {
@@ -304,14 +334,19 @@ GET ecommerce_data/_search
 }
 ```
 Expected response from Elasticsearch: 
-![image](https://user-images.githubusercontent.com/60980933/112384174-b34af200-8cb3-11eb-8d4c-1eb3f068f81f.png)
 
-### Aggregations Scope
-#### Analyze the data to show the the sum of number of items sold in France
+Approximately, there are 4325 unique number of customers in our data set. 
+![image](https://user-images.githubusercontent.com/60980933/112532216-2add5780-8d6e-11eb-9649-edd1c38dbd44.png)
 
-In the previous example, the aggregation was run on all the documents of the indices matching the index ecommerce_data. What happens if you want to run an aggregation on just a subset of the documents? You can add a query clause to an aggregation to limit the scope of the query. The metric will then be computed on the set of documents defined by your query.
+#### Aggregations Scope: Analyze the data to compute the average unit price of items sold in Germany
 
-For example, to answer the question: “What is the sum of number of items sold in France?” you need to combine a query and an aggregation.
+In the previous example, the aggregation was run on all the documents in the e_commerce index. What happens if you want to run an aggregation on a subset of the documents? 
+
+For example, our e-commerce index contains e-commerce data from multiple European countries. What if you want to focus on the average of unit price of items sold in Germany? 
+
+To limit the scope of the query, a query clause can be added to an aggregation. The query defines the subset of documents that aggregations should be ran. 
+
+The combined query and aggregations look like the following: 
 
 Syntax:
 ```
@@ -324,8 +359,7 @@ GET Enter_name_of_the_index_here/_search
   "aggregations": {
     "Name your aggregation here": {
       "Specify aggregation type here": {
-        "field": "Name the field you want to aggregate here",
-        "size": State how many buckets you want returned here
+        "field": "Name the field you want to aggregate here"
       }
     }
   }
@@ -333,27 +367,35 @@ GET Enter_name_of_the_index_here/_search
 ```
 Example: 
 ```
-GET ecommerce_data/_search
+GET e_commerce/_search
 {
   "size": 0,
   "query": {
     "match": {
-      "Country": "France"
-      
+      "Country": "Germany"
     }
   },
   "aggs": {
-    "france_total_number_of_items_sold": {
-      "sum": {
-        "field":"Quantity"
+    "germany_average_unit_price": {
+      "avg": {
+        "field":"UnitPrice"
       }
     }
-    
   }
 }
 ```
-###  Searching for a phrase
-#### What happens when you use the `match query` to search for phrases?
+
+Expected response from Elasticsearch:
+
+The average of unit price of items sold in Germany is 4.58.
+![image](https://user-images.githubusercontent.com/60980933/112534501-c1ab1380-8d70-11eb-9ce7-507953cc26d0.png)
+
+The combination of query and aggregation allowed us to perform aggregations on A SUBSET of documents. What if we wanted to perform aggreations on SEVERAL SUBSETS of documents? 
+
+This is where Bucket Aggregations come into play! 
+
+###  Bucket Aggregations
+#### The Date Histogram Aggregation
 Let's search for articles about Ed Sheeran's song "Shape of you" using the match query.
 
 Example: 
