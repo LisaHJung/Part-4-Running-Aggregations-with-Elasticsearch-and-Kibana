@@ -39,7 +39,7 @@ GET Enter_name_of_the_index_here/_search
 ```
 Example: 
 ```
-GET ecommerce_data/_search
+GET e_commerce/_search
 ```
 Expected response from Elasticsearch:
 
@@ -48,13 +48,11 @@ Elasticsearch displays a number of hits and a sample of 10 search results by def
 ![image](https://user-images.githubusercontent.com/60980933/112375185-9c52d280-8ca8-11eb-9952-16f24171dfbd.png)
 
 ### Aggregations Request
-#### Analyze the data to show the the sum of number of items sold
-
 Syntax:
 ```
 GET Enter_name_of_the_index_here/_search
 {
-  "aggregations": {
+  "aggs" or "aggregations": {
     "Name your aggregation here": {
       "Specify aggregation type here": {
         "field": "Name the field you want to aggregate here"
@@ -63,90 +61,191 @@ GET Enter_name_of_the_index_here/_search
   }
 }
 ```
-Example:
+#### Analyze the data to get the `sum` of all unit price
+
+Syntax:
 ```
-GET ecommerce_data/_search
+GET Enter_name_of_the_index_here/_search
 {
-  "size": 0,
-  "aggs": {
-    "total_number_of_items_sold": {
+  "aggs" or "aggregations": {
+    "Name your aggregation here": {
       "sum": {
-        "field":"Quantity"
+        "field": "Name the field you want to aggregate here"
       }
     }
-    
+  }
+}
+```
+Example:
+```
+GET e_commerce/_search
+{
+  "aggs": {
+    "sum_unit_price": {
+      "sum": {
+        "field":"UnitPrice"
+      }
+    }
   }
 }
 ```
 Expected response from Elasticsearch:
 
-When you minimize hits(line 10), you will see the aggregations report we named by_category. This report displays all categories that exist in our datset as well as the number of documents that fall under each category. 
+By default, Elasticsearch will return top 10 most relevant documents. 
 
-![image](https://user-images.githubusercontent.com/60980933/112375663-2438dc80-8ca9-11eb-9d69-f9d1aeacae12.png)
+![image](https://user-images.githubusercontent.com/60980933/112508582-4d16ab80-8d55-11eb-93c1-09e956a14aaf.png)
 
-#### Analyze the data to show the lowest price of an item 
+When you minimize hits(line 10), you will see the aggregations report we named sum_unit_price. This report displays the sum of all unit prices listed in our data set. 
+
+![image](https://user-images.githubusercontent.com/60980933/112512282-da0f3400-8d58-11eb-892d-0f577c9247fd.png)
+
+If the purpose of running an aggregation is solely to get the values of aggregations, you can add the size parameter and set it to 0 as shown below. This parameter will prevent Elasticsearch from fetching the top 10 documents and speed up the query. 
+
+Example:
+```
+GET e_commerce/_search
+{
+  "size": 0,
+  "aggs": {
+    "sum_unit_price": {
+      "sum": {
+        "field":"UnitPrice"
+      }
+    }
+  }
+}
+```
+Expected response from Elasticsearch:
+
+Now you do not need to minimize hits to get to the aggregations report! We will be adding the size parameter to all aggregations request from this point on. 
+
+![image](https://user-images.githubusercontent.com/60980933/112512473-032fc480-8d59-11eb-8c42-d3cfa7d23632.png)
+
+#### Analyze the data to show the lowest(`min`) unit price of an item 
+
 Syntax:
 ```
+GET Enter_name_of_the_index_here/_search
+{
+  "size": 0,
+  "aggs" or "aggregations": {
+    "Name your aggregation here": {
+      "min": {
+        "field": "Name the field you want to aggregate here"
+      }
+    }
+  }
+}
 ```
 Example: 
 ```
-GET ecommerce_data/_search
+GET e_commerce/_search
 {
+  "size": 0,
   "aggs": {
-    "lowest_price": {
+    "lowest_unit_price": {
       "min": {
         "field":"UnitPrice"
       }
     }
-    
   }
 }
 ```
+Expected response from Elasticsearch:
 
-#### Analyze the data to show the highest price of an item 
+The lowest unit price of an item is 1.01. 
+![image](https://user-images.githubusercontent.com/60980933/112509885-869be680-8d56-11eb-9c2e-5935ff7437e8.png)
+
+#### Analyze the data to show the highest(`max`) unit price of an item 
 Syntax:
 ```
+GET Enter_name_of_the_index_here/_search
+{
+  "size": 0,
+  "aggs" or "aggregations": {
+    "Name your aggregation here": {
+      "max": {
+        "field": "Name the field you want to aggregate here"
+      }
+    }
+  }
+}
 ```
 Example: 
 ```
-GET ecommerce_data/_search
+GET e_commerce/_search
 {
+  "size": 0,
   "aggs": {
-    "lowest_price": {
+    "highest_unit_price": {
       "max": {
         "field":"UnitPrice"
       }
     }
-    
   }
 }
 ```
+Expected response from Elasticsearch:
+The highest unit price of an item is 498.79. 
 
-#### Analyze the data to show the average price of items in the inventory 
+![image](https://user-images.githubusercontent.com/60980933/112511189-cca57a00-8d57-11eb-9ab3-809b2a410636.png)
+
+#### Analyze the data to show the `average` unit price of items in the inventory 
 Syntax:
 ```
+GET Enter_name_of_the_index_here/_search
+{
+  "size": 0,
+  "aggs" or "aggregations": {
+    "Name your aggregation here": {
+      "avg": {
+        "field": "Name the field you want to aggregate here"
+      }
+    }
+  }
+}
 ```
 Example: 
 ```
-GET ecommerce_data/_search
+GET e_commerce/_search
 {
+  "size": 0,
   "aggs": {
-    "lowest_price": {
+    "average_unit_price": {
       "avg": {
         "field":"UnitPrice"
       }
     }
-    
   }
 }
 ```
-#### Stats Aggregation: Analyze the data to show all the main metrics(min, max, sum, avg).  
+Expected response from Elasticsearch: 
+
+Average unit price in our invetory is around 4.39.
+![image](https://user-images.githubusercontent.com/60980933/112511759-58b7a180-8d58-11eb-811f-8d6cb852c220.png
+
+#### `Stats` Aggregation: Analyze the data to show all the main metrics(count, min, max, avg, sum) in one request. 
+Syntax:
 ```
-GET ecommerce_data/_search
+GET Enter_name_of_the_index_here/_search
+{
+  "size": 0,
+  "aggs" or "aggregations": {
+    "Name your aggregation here": {
+      "stats": {
+        "field": "Name the field you want to aggregate here"
+      }
+    }
+  }
+}
+```
+Example:
+```
+GET e_commerce/_search
 {
   "size": 0,
   "aggs": {
-    "price": {
+    "all_stats_unit_price": {
       "stats": {
         "field": "UnitPrice"
       }
@@ -154,6 +253,11 @@ GET ecommerce_data/_search
   }
 }
 ```
+Expected Response from Elasticsearch:
+
+Stats aggregation will yield the values of `count`(total number of unit prices in the data set), `min`, `max`, `avg`, and `sum`(sum of all unit prices in the data set). 
+
+![image](https://user-images.githubusercontent.com/60980933/112512994-84875700-8d59-11eb-938a-fb7c61aee2b2.png)
 
 #### The Percentiles Aggregations
 Example: 
