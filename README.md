@@ -395,187 +395,159 @@ The combination of query and aggregation allowed us to perform aggregations on A
 This is where Bucket Aggregations come into play! 
 
 ###  Bucket Aggregations
-#### The Date Histogram Aggregation
-Let's search for articles about Ed Sheeran's song "Shape of you" using the match query.
+Buckets are collection of documents that share a common criteria. There are many ways to group documents into buckets.
 
-Example: 
+1. Date Histogram Aggregation
+2. Histogram Aggregations
+3. Range Aggregation
+4. Terms aggregations
+
+#### 1.The Date Histogram Aggregation
+When you want an overview of the data distributed over time, grouping documents into buckets based on time interval comes in handy. 
+
+There are two ways to define the time interval.
+
+1. Fixed_interval:The inverval is always constant
+Example: orders by 7 days
+
 ```
-GET news_headlines/_search
+GET e_commerce/_search
 {
-  "query": {
-    "match": {
-      "headline":{
-        "query":"Shape of you"
-   }
+  "size": 0,
+  "aggs": {
+    "orders_by_week": {
+      "date_histogram": {
+        "field":"InvoiceDate",
+        "fixed_interval": "7d",
+        "format": "MM-dd-yyyy-H-m "
+      }
+    }
   }
- }
 }
 ```
 Expected response from Elasticsearch:
 
-Elasticsearch returns greater than 10,000 hits. The top hit as well as many others in the search results only contain the search terms "you" and "shape". These terms are not found in the same order or proximity to each other as the search query "Shape of you".  Along with a few articles about the song "Shape of you", it pulls up articles about being in shape or what shape of your face says about you. 
+2. Calendar_interval: The interval may vary
+Ex. Sales data for each month(Due to daylight savings observed in the US, the length of specific days can vary. Some months have different number of days)
 
-When the `match query` is used to search for a phrase, it has high recall but low precision as it returns a lot of loosely related documents.
+Example: 
+```
+GET e_commerce/_search
+{
+  "size": 0,
+  "aggs": {
+    "orders_by_month": {
+      "date_histogram": {
+        "field":"InvoiceDate",
+        "calendar_interval": "1M",
+        "format": "MM-dd-yyyy-H-m "
+      }
+    }
+  }
+}
+```
+Expected response from Elasticsearch:
 
-![image](https://user-images.githubusercontent.com/60980933/108571746-17058800-72ce-11eb-8b44-57df1cbb35d1.png)
 
-#### Searching for phrases using the `match_phrase` query
+#### Histogram Aggregations
+Histogram aggregations can be applied to any numerical field. 
+
 Syntax: 
 ```
-GET Enter_name_of_index_here/_search
-{
-  "query": {
-    "match_phrase": {
-      "Specify the field you want to search":{
-        "query":"Enter search terms"
-   }
-  }
- }
-}
+
 ```
 Example: 
 ```
-GET news_headlines/_search
-{
-  "query": {
-    "match_phrase": {
-      "headline":{
-        "query":"Shape of You"
-   }
-  }
- }
-}
+
 ```
-When the `match_phrase` parameter is used, all hits must meet the following criteria:
-1. the search terms "Shape", "of", and "you" must appear in the headline field.
-2. the terms must appear in that order.
-3. the terms must appear next to each other.
 
-Expected response from Elasticsearch:
-
-With `match_phrase` parameter, we get 3 hits returned. All 3 hits satisfy the criteria mentioned above. 
-
-The `match_phrase` parameter yields higher precision but lower recall. 
-
-![image](https://user-images.githubusercontent.com/60980933/108422566-f537d280-71f3-11eb-8340-2899b5fbc61e.png)
-
-### Running a match query against multiple fields 
-When designing a query, you do not always know the context of user's search. When a user searches for "Michelle Obama", the user could be searching for statements written by Michelle Obama or articles related to her. 
-
-To accommodate these contexts, you can write a query designed search for terms in multiple fields.
-
-This query runs a match query on each field and calculates a score for each field. Then it assigns the highest score among the fields to the document. 
+### The Range Aggregation 
+In the previous example, your intervals had the same preset size. What if you want to create custom intervals or intervals of varying sizes? You can use the range bucket aggregation which allows you to define your own intervals.
 
 Syntax:
 ```
-GET Enter_the_name_of_the_index_here/_search
-{
-  "query": {
-    "multi_match": {
-      "query":"Enter search terms here",
-      "fields": [
-        "List the field you want to search over",
-        "List the field you want to search over",
-        "List the field you want to search over"
-        ]
-    }
-  }
-}
+
 ````
-Example: Find the search terms "Michelle" and "Obama" in the headline, short_description, and author fields. 
+Example: 
 
 ```
-GET news_headlines/_search
-{
-  "query": {
-    "multi_match": {
-      "query":"Michelle Obama",
-      "fields": [
-        "headline",
-        "short_description",
-        "authors"
-        ]
-    }
-  }
-}
+
 ```
 Expected response from Elasticsearch:
 
-We see 3044 hits that contain "Michelle Obama" in the headline or short_description or author field. While the multi_match query increased the recall, it decreased the precision of the hits. 
-
-An article featuring Bernie Sanders as the main topic is pulled up as a top hit for a search regarding Michelle Obama. In this article, Michelle Obama is mentioned once in the short description. 
-
-![image](https://user-images.githubusercontent.com/60980933/108615076-902fd880-73bd-11eb-97a8-9e600bb5952b.png)
-
-#### Per-field boosting
-Articles mentioning "Michelle Obama" in the headline are more likely to be related to our search than the articles that mention "Michelle Obama" once or twice in the short_description. 
-
-To improve the precision of your search, you can designate one field to carry more weight more than others. 
-
-This can be done by boosting the score of the field headline using the carat(^) symbol.
+#### The Terms Aggregation
+The terms aggregation will return a specified number of buckets of the most commonly seen values in a field
 
 Syntax:
 ```
-GET Enter_the_name_of_the_index_here/_search
+GET Enter_name_of_the_index_here/_search
 {
-  "query": {
-    "multi_match": {
-      "query":"Enter search terms",
-      "fields": [
-        "List field you want to boost^2",
-        "List field you want to search over",
-        "List field you want to search over"
-        ],
+  "aggregations": {
+    "Name your aggregation here": {
+      "terms": {
+        "field": "Name the field you want to aggregate here",
+        "size": State how many buckets you want returned here
+      }
+    }
   }
- }
 }
 ```
 Example:
 ```
-GET news_headlines/_search
+GET e_commerce/_search
 {
-  "query": {
-    "multi_match": {
-      "query":"Michelle Obama",
-      "fields": [
-        "headline^2",
-        "short_description",
-        "authors"
-        ]
+  "size": 0,
+  "aggs": {
+    "top_5_customers": {
+      "terms": { 
+        "field": "CustomerID", 
+        "size": 5
+      }
+    }
+  }
+}
+```
+
+Example: which product most popular
+```
+GET e_commerce/_search
+{
+  "size": 0,
+  "aggs": {
+    "top_5_customers": {
+      "terms": { 
+        "field": "Description", 
+        "size": 5
+      }
     }
   }
 }
 ```
 Expected response from Elasticsearch:
+Elasticsearch yields an array of 5 buckets 
+![image](https://user-images.githubusercontent.com/60980933/112551625-ead69e80-8d86-11eb-8b26-74b7c3f698bf.png)
 
-`Per-field boosting` yields same number of hits(5128). However, it changed the ranking of the hits. The hits ranked higher on the list have Michelle Obama in the boosted field, headline. 
+#### Bucket Sorting
 
-These articles are more likely to be about Michelle Obama and we have improved the precision of our search!
+You may have noticed that the buckets are sorted differently depending on aggregation. The terms aggregation, for instance, sorts the buckets by the "doc_count" values. The date histogram, on the other hand, sorts the bucket based on the "key" values. 
 
-![image](https://user-images.githubusercontent.com/60980933/108877609-a5268a80-75bc-11eb-8f61-ce1d1702a6e0.png)
+To change the field used to sort the buckets of an aggregation, you can add an optional parameter "order".  There are two built-in fields you can sort by:
 
-#### What happens when you use the `multi_match` query to search for a phrase?
+Use _count to sort the buckets by their number of documents
 
-While searching for Michelle Obama, the user remembers that she is throwing a party for all of her friends this weekend. She searches for articles regarding party planning to get some ideas for it. 
+This is the default behavior for the terms aggregation
+
+Use _key to sort the buckets by their "key" values
+This is the default behavior for the histogram and date_histogram aggregations
+The aggregation below orders the date_histogram to return the most recent interval first instead of las
+
+Example: 
 ```
-GET news_headlines/_search
-{
-  "query": {
-    "multi_match": {
-      "query":"party planning",
-      "fields": [
-        "headline^2",
-        "short_description"
-        ]
-    }
-  }
-}
+
 ```
 Response from Elasticsearch:
 
-This query yields a lot of hits(2846). This happens because the terms "party" or "planning" are popular terms. With the `multi_match query`, a document is considered as a hit if any one of these search terms were found in any of these fields in any way shape or form. Because of this wide net, you will see irrelevant search results included among the hits. 
 
-![image](https://user-images.githubusercontent.com/60980933/108582689-09fa9000-72f2-11eb-8e34-8f6cc4302254.png)
 
 #### Improving precision with phrase type match
  
