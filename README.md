@@ -260,7 +260,7 @@ GET e_commerce/_search
 ```
 Expected Response from Elasticsearch:
 
-Stats aggregation will yield the values of `count`(total number of unit prices in the data set), `min`, `max`, `avg`, and `sum`(sum of all unit prices in the data set). 
+Stats aggregation will yield the values of `count`(the number of unit prices aggregation was performed on), `min`, `max`, `avg`, and `sum`(sum of all unit prices in the data set). 
 
 ![image](https://user-images.githubusercontent.com/60980933/112512994-84875700-8d59-11eb-938a-fb7c61aee2b2.png)
 
@@ -448,16 +448,39 @@ GET e_commerce/_search
 ```
 Expected response from Elasticsearch:
 
-
 #### Histogram Aggregations
 Histogram aggregations can be applied to any numerical field. 
+Distribution of order amounts. Specify an interval, ake bueckts for each interval between minimum and maximum value for the field. 
 
 Syntax: 
 ```
-
+POST e_commerce/_search
+{
+  "size": 0,
+  "aggs" or "aggregations": {
+    "Name your aggregation here": {
+      "histogram": {
+        "field":"Name the field you want to aggregate here",
+        "interval": State the interval here
+      }
+    }
+  }
+}
 ```
 Example: 
 ```
+POST e_commerce/_search
+{
+  "size": 0,
+  "aggs": {
+    "prices": {
+      "histogram": {
+        "field": "UnitPrice",
+        "interval": 5
+      }
+    }
+  }
+}
 
 ```
 
@@ -466,11 +489,42 @@ In the previous example, your intervals had the same preset size. What if you wa
 
 Syntax:
 ```
-
+GET Enter_name_of_the_index_here/_search
+{
+  "size": 0,
+  "aggs" or "aggregations": {
+     "Name your aggregation here": {
+      "range": {
+        "field":"Name the field you want to aggregate here",
+        "ranges": [
+          { "to": x },
+          { "from": x, "to": y },
+          { "from": z }
+        ]
+      }
+    }
+  }
+}
 ````
 Example: 
 
 ```
+GET e_commerce/_search
+{
+  "size": 0,
+  "aggs": {
+    "price_ranges": {
+      "range": {
+        "field": "UnitPrice",
+        "ranges": [
+          { "to": 50 },
+          { "from": 50, "to": 100 },
+          { "from": 100 }
+        ]
+      }
+    }
+  }
+}
 
 ```
 Expected response from Elasticsearch:
@@ -527,27 +581,11 @@ Expected response from Elasticsearch:
 Elasticsearch yields an array of 5 buckets 
 ![image](https://user-images.githubusercontent.com/60980933/112551625-ead69e80-8d86-11eb-8b26-74b7c3f698bf.png)
 
-#### Bucket Sorting
+### Combining Aggregations
+Some questions need a combination of aggregation to be answered. What is the sum of revenue per day? 
+This requires both metric and buckets aggregation. 
 
-You may have noticed that the buckets are sorted differently depending on aggregation. The terms aggregation, for instance, sorts the buckets by the "doc_count" values. The date histogram, on the other hand, sorts the bucket based on the "key" values. 
-
-To change the field used to sort the buckets of an aggregation, you can add an optional parameter "order".  There are two built-in fields you can sort by:
-
-Use _count to sort the buckets by their number of documents
-
-This is the default behavior for the terms aggregation
-
-Use _key to sort the buckets by their "key" values
-This is the default behavior for the histogram and date_histogram aggregations
-The aggregation below orders the date_histogram to return the most recent interval first instead of las
-
-Example: 
-```
-
-```
 Response from Elasticsearch:
-
-
 
 #### Improving precision with phrase type match
  
