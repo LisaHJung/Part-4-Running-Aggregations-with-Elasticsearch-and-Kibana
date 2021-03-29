@@ -28,7 +28,11 @@ Workshop objectives:
 ## Review from Workshop Part 3
 There are two main ways to search in Elasticsearch:
 1) `Queries`retrieve documents that match the specified criteria. 
-2) `Aggregations` present the summary of your data as metrics, statistics, and other analytics.  
+2) `Aggregations` present the summary of your data as metrics, statistics, and other analytics. 
+
+![image](https://user-images.githubusercontent.com/60980933/112909101-01923380-90ae-11eb-96f5-445a4644cff2.png)
+
+![image](https://user-images.githubusercontent.com/60980933/112909169-21295c00-90ae-11eb-92b2-9d15abd80362.png)
 
 ### Get information about documents in an index
 The following query will retrieve all documents that exist in the specified index. This query is a great way to explore the structure and content of your document. 
