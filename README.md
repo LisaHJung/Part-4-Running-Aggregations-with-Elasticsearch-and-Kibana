@@ -134,6 +134,22 @@ Now you do not need to minimize hits to get to the aggregations report! We will 
 
 ![image](https://user-images.githubusercontent.com/60980933/112512473-032fc480-8d59-11eb-8c42-d3cfa7d23632.png)
 
+#### multiply mutiple fields and get a sum
+```
+GET e_commerce_2/_search
+{
+    "aggs": {
+        "total_price": {
+            "sum": {
+                "script": {
+                    "lang": "painless",
+                    "inline": "doc['UnitPrice'].value * doc['Quantity'].value"
+                }
+            }
+        }
+    }
+}
+```
 #### Analyze the data to compute the lowest(`min`) unit price of an item 
 
 Syntax:
@@ -427,8 +443,7 @@ GET e_commerce/_search
     "orders_by_week": {
       "date_histogram": {
         "field":"InvoiceDate",
-        "fixed_interval": "7d",
-        "format": "MM-dd-yyyy-H-m "
+        "fixed_interval": "7d"
       }
     }
   }
@@ -594,9 +609,131 @@ Elasticsearch yields an array of 5 buckets
 Some questions need a combination of aggregation to be answered. What is the sum of revenue per day? 
 This requires both metric and buckets aggregation. 
 
+#### Daily revenue
+```
+GET e_commerce_2/_search
+{
+  "size": 0,
+  "aggs": {
+    "orders_by_day": {
+      "date_histogram": {
+        "field":"InvoiceDate",
+        "calendar_interval": "day"
+      },
+      "aggs": {
+        "daily_revenue": {
+          "sum": {
+            "field": "UnitPrice"
+          }
+        }
+      }
+    }
+  }
+}
+```
+Split the documents into daily buckets. multiply unitprice and quantity of each document than get the sum of it. To do this, create a new aggregation inside the first aggregation. 
+This new aggregation compute the sum of the field unitprice and quantity on every bueckt. 
+
+Each bucket - orders by day
+alson contains the sub aggregation called daily revenue
+
+```
+GET e_commerce_2/_search
+{
+  "size": 0,
+  "aggs": {
+    "orders_by_day": {
+      "date_histogram": {
+        "field":"InvoiceDate",
+        "calendar_interval": "day"
+      },
+      "aggs": {
+        "daily_revenue": {
+          "sum": {
+            "script": {
+              "inline":
+                "doc['UnitPrice'].value * doc['Quantity'].value"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+```
+
 Response from Elasticsearch:
 
-#### Improving precision with phrase type match
+#### Calculating multiple metrics per bucket
+Caluculate daily revenue also add unique number of customer per day, add cardinality aggregation inside the daily historgram aggregation
+```
+GET e_commerce_2/_search
+{
+  "size": 0,
+  "aggs": {
+    "orders_by_day": {
+      "date_histogram": {
+        "field":"InvoiceDate",
+        "calendar_interval": "day",
+        "order": {
+          "daily_revenue": "desc"
+        }
+      },
+      "aggs": {
+        "daily_revenue": {
+          "sum": {
+            "script": {
+              "inline":
+                "doc['UnitPrice'].value * doc['Quantity'].value"
+            }
+          }
+        },
+        "unique_customers_per_day": {
+          "cardinality": {
+            "field": "CustomerID"
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+#### Creating multiple subuckets
+month and country and monthly revenue per country
+```
+GET e_commerce_2/_search
+{
+  "size": 0,
+  "aggs": {
+    "orders_by_month": {
+      "date_histogram": {
+        "field":"InvoiceDate",
+        "calendar_interval": "month"
+      },
+      "aggs": {
+        "by_country": {
+          "terms": {
+            "field": "Country"
+          },
+        "monthly_revenue": {
+          "sum": {
+            "script": {
+              "inline":
+                "doc['UnitPrice'].value * doc['Quantity'].value"
+        }
+      }
+    }
+  }
+}
+```
+
+#### Sorting 
+
+
+
+#### Top Hits Aggregation
+
  
 You can improve the precision of a `multi_match query` by adding a phrase type match in the query. 
 The phrase type performs a match_phrase query on each field and calculates a score for each field. Then it assigns the best score to the document. 
