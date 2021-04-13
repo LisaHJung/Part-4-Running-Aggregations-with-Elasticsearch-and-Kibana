@@ -29,9 +29,10 @@ By the end of this workshop, you will be able to run:
 
 [Elastic America Virtual Chapter](https://community.elastic.co/amer-virtual/): Want to attend live workshops? Join the Elastic Americal Virtual Chapter to get the deets!
 
-## updating data set
+## Preparing the data set
+Run these queries in order specified below. 
 
-STEP 1:
+STEP 1: Use delete_by_query to delete UnitPrice values less than 1. 
 ```
 POST Enter_name_of_Index/_delete_by_query
 {
@@ -45,7 +46,7 @@ POST Enter_name_of_Index/_delete_by_query
 }
 ```
 
-STEP 2:
+STEP 2:Use delete_by_query to delete UnitPrice values greater than 500. 
 ```
 POST Enter_name_of_Index/_delete_by_query
 {
@@ -58,7 +59,7 @@ POST Enter_name_of_Index/_delete_by_query
   }
 }
 ```
-STEP 3:
+STEP 3: Create a new index called ecommerce_data and assign data types to the fields you expect this index to store. 
 ```
 PUT ecommerce_data
 {
@@ -96,8 +97,7 @@ PUT ecommerce_data
   }
 }
 ```   
-
-STEP 4: 
+STEP 4: Copy documents from the original index you added E-commerce data to(source) to the ecommerce_data index you just created(destination).
 ```
 POST _reindex
 {
