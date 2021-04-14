@@ -30,36 +30,11 @@ By the end of this workshop, you will be able to run:
 [Elastic America Virtual Chapter](https://community.elastic.co/amer-virtual/): Want to attend live workshops? Join the Elastic Americal Virtual Chapter to get the deets!
 
 ## Preparing the data set
-Run these queries in order specified below. 
+Copy and paste these queries into Dev Tools in Kibana and run these queries in order specified below. 
 
-STEP 1: Use delete_by_query to delete UnitPrice values less than 1. 
-```
-POST Enter_name_of_Index/_delete_by_query
-{
-  "query": {
-    "range" : {
-        "UnitPrice" : {
-           "lte" : 1
-        }
-    }
-  }
-}
-```
+These queries will create a new index and set the data types of each field into types conducive to aggregations we will perform in this workshop(Step 1). Then,we copy the data from our original index to the new index we have just created(Step 2). Last two steps(Steps 3 & 4) removes outliers that skew our data. 
 
-STEP 2:Use delete_by_query to delete UnitPrice values greater than 500. 
-```
-POST Enter_name_of_Index/_delete_by_query
-{
-  "query": {
-    "range" : {
-        "UnitPrice" : {
-           "gte" : 500
-        }
-    }
-  }
-}
-```
-STEP 3: Create a new index called ecommerce_data and assign data types to the fields you expect this index to store. 
+STEP 1: Create a new index called ecommerce_data and assign data types to the fields you expect this index to store. 
 ```
 PUT ecommerce_data
 {
@@ -97,19 +72,47 @@ PUT ecommerce_data
   }
 }
 ```   
-STEP 4: Copy documents from the original index you added E-commerce data to(source) to the ecommerce_data index you just created(destination).
+STEP 2: Copy documents from the original index you added E-commerce data to(source) to the ecommerce_data index you just created(destination).
 ```
 POST _reindex
 {
   "source": {
-    "index": "name of your original index"
+    "index": "name of your original index when you added the data to Elasticsearch"
   },
   "dest": {
     "index": "ecommerce_data"
   }
 }
 ```
-## Review from Workshop Part 3
+
+STEP 3: Use delete_by_query to delete all UnitPrice values less than 1. 
+```
+POST ecommerce_data/_delete_by_query
+{
+  "query": {
+    "range": {
+      "UnitPrice": {
+        "lte": 1
+      }
+    }
+  }
+}
+```
+
+STEP 4:Use delete_by_query to delete all UnitPrice values greater than 500. 
+```
+POST ecommerce_data/_delete_by_query
+{
+  "query": {
+    "range": {
+      "UnitPrice": {
+        "gte": 500
+      }
+    }
+  }
+}
+```
+## Review from previous workshops
 There are two main ways to search in Elasticsearch:
 1) `Queries`retrieve documents that match the specified criteria. 
 2) `Aggregations` present the summary of your data as metrics, statistics, and other analytics. 
@@ -127,11 +130,11 @@ GET Enter_name_of_the_index_here/_search
 ```
 Example: 
 ```
-GET e_commerce/_search
+GET ecommerce_data/_search
 ```
 Expected response from Elasticsearch:
 
-Elasticsearch displays a number of hits and a sample of 10 search results by default.  The field "_ source"(line 22) lists all fields or content of the document.
+Elasticsearch displays a number of hits(line 12) and a sample of 10 search results by default. The first search result(a document)is shown in lines 17-31.  The field "_ source"(line 22) lists all fields or content of the document.
 
 ![image](https://user-images.githubusercontent.com/60980933/112375185-9c52d280-8ca8-11eb-9952-16f24171dfbd.png)
 
@@ -141,9 +144,9 @@ Syntax:
 GET Enter_name_of_the_index_here/_search
 {
   "aggs" or "aggregations": {
-    "Name your aggregation here": {
+    "Name your aggregations report here": {
       "Specify aggregation type here": {
-        "field": "Name the field you want to aggregate here"
+        "field": "Name the field you want to aggregate on here"
       }
     }
   }
@@ -151,7 +154,7 @@ GET Enter_name_of_the_index_here/_search
 ```
 
 ### Metric Aggregations 
-`Metric` aggregations compute a value based on a set of documents. It can be used to calculate values of `sum`,`min`, `max`, `avg`,  `percentiles` and unique count(`cardinality`). 
+`Metric`aggregations are used to compute numeric values based on your dataset. It can be used to calculate values of `sum`,`min`, `max`, `avg`, `percentiles` and unique count(`cardinality`). 
 
 #### Compute the `sum` of all unit prices in the data set
 
@@ -160,7 +163,7 @@ Syntax:
 GET Enter_name_of_the_index_here/_search
 {
   "aggs" or "aggregations": {
-    "Name your aggregation here": {
+    "Name your aggregations report here": {
       "sum": {
         "field": "Name the field you want to aggregate here"
       }
@@ -170,12 +173,12 @@ GET Enter_name_of_the_index_here/_search
 ```
 Example:
 ```
-GET e_commerce/_search
+GET ecommerce_data/_search
 {
   "aggs": {
     "sum_unit_price": {
       "sum": {
-        "field":"UnitPrice"
+        "field": "UnitPrice"
       }
     }
   }
@@ -183,25 +186,25 @@ GET e_commerce/_search
 ```
 Expected response from Elasticsearch:
 
-By default, Elasticsearch will return top 10 most relevant documents. 
+By default, Elasticsearch will return top 10 most relevant documents (Lines 16+). 
 
-![image](https://user-images.githubusercontent.com/60980933/112508582-4d16ab80-8d55-11eb-93c1-09e956a14aaf.png)
+![image](https://user-images.githubusercontent.com/60980933/114756805-5b366700-9d18-11eb-8ea4-1164821e715f.png)
 
 When you minimize hits(red box- line 10), you will see the aggregations report we named sum_unit_price(image below). This report displays the sum of all unit prices listed in our data set. 
 
-![image](https://user-images.githubusercontent.com/60980933/112512282-da0f3400-8d58-11eb-892d-0f577c9247fd.png)
+![image](https://user-images.githubusercontent.com/60980933/114757167-c122ee80-9d18-11eb-9d7a-3856612c7de0.png)
 
 If the purpose of running an aggregation is solely to get the values of aggregations, you can add the size parameter and set it to 0 as shown below. This parameter will prevent Elasticsearch from fetching the top 10 documents and speed up the query. 
 
 Example:
 ```
-GET e_commerce/_search
+GET ecommerce_data/_search
 {
   "size": 0,
   "aggs": {
     "sum_unit_price": {
       "sum": {
-        "field":"UnitPrice"
+        "field": "UnitPrice"
       }
     }
   }
@@ -211,24 +214,8 @@ Expected response from Elasticsearch:
 
 Now you do not need to minimize hits to get to the aggregations report! We will be adding the size parameter to all aggregations request from this point on. 
 
-![image](https://user-images.githubusercontent.com/60980933/112512473-032fc480-8d59-11eb-8c42-d3cfa7d23632.png)
+![image](https://user-images.githubusercontent.com/60980933/114757369-034c3000-9d19-11eb-94e7-7231ee95327b.png)
 
-#### multiply mutiple fields and get a sum
-```
-GET e_commerce_2/_search
-{
-    "aggs": {
-        "total_price": {
-            "sum": {
-                "script": {
-                    "lang": "painless",
-                    "inline": "doc['UnitPrice'].value * doc['Quantity'].value"
-                }
-            }
-        }
-    }
-}
-```
 #### Compute the lowest(`min`) unit price of an item 
 
 Syntax:
