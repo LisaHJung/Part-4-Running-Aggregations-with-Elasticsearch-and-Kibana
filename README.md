@@ -396,7 +396,7 @@ Approximately, there are 4325 unique number of customers in our data set.
 
 In previous examples, aggregations were performed on all documents in the ecommerce_data index. What happens if you want to run an aggregation on a subset of the documents? 
 
-For example, our ecommerce_data index contains e-commerce data from multiple European countries. What if you want to focus on the average of unit price of items sold in Germany? 
+For example, our ecommerce_data index contains e-commerce data from multiple countries. What if you want to focus on the average of unit price of items sold in Germany? 
 
 To limit the scope of the aggregation, a query clause can be added to the request. The query clause defines the subset of documents that aggregations should be performed on.  
 
@@ -451,7 +451,10 @@ The combination of query and aggregation allowed us to perform aggregations on a
 This is where Bucket Aggregations come into play! 
 
 ###  Bucket Aggregations
-Buckets are collection of documents that share a common criteria. There are many ways to group documents into buckets.
+Bucket aggregations group documents into several sets of documents called buckets. 
+Buckets are collections of documents that share a common criteria.
+
+The following are different types of bucket aggregations. 
 
 1. Date Histogram Aggregation
 2. Histogram Aggregations
@@ -459,21 +462,21 @@ Buckets are collection of documents that share a common criteria. There are many
 4. Terms aggregations
 
 #### 1.The Date Histogram Aggregation
-When you want an overview of the data distributed over time, grouping documents into buckets based on time interval comes in handy. 
+When you collect data over time (i.e. transaction data over a year), you may be able to gain valuable insights if you can group documents based on a given time interval. 
 
 There are two ways to define the time interval.
 
 1. Fixed_interval:The inverval is always constant
-Example: orders by 7 days
+Example: Create buckets for every seven days. 
 
 ```
-GET e_commerce/_search
+GET ecommerce_data/_search
 {
   "size": 0,
   "aggs": {
-    "orders_by_week": {
+    "transactions_by_week": {
       "date_histogram": {
-        "field":"InvoiceDate",
+        "field": "InvoiceDate",
         "fixed_interval": "7d"
       }
     }
@@ -481,19 +484,24 @@ GET e_commerce/_search
 }
 ```
 Expected response from Elasticsearch:
+Elasticsearch creates buckets for every 7 days and hows the number of documents grouped into each bucket. 
 
-2. Calendar_interval: The interval may vary
-Ex. Sales data for each month(Due to daylight savings observed in the US, the length of specific days can vary. Some months have different number of days)
+![image](https://user-images.githubusercontent.com/60980933/114788575-f17d8380-9d3e-11eb-90e0-bcee2c7209dd.png)
+
+2. Calendar_interval: The interval may vary.
+
+Ex. Creating a bucket for each month
+Due to daylight savings observed in the US, the length of specific days can vary. Some months have different number of days!
 
 Example: 
 ```
-GET e_commerce/_search
+GET ecommerce_data/_search
 {
   "size": 0,
   "aggs": {
-    "orders_by_month": {
+    "transactions_by_month": {
       "date_histogram": {
-        "field":"InvoiceDate",
+        "field": "InvoiceDate",
         "calendar_interval": "1M"
       }
     }
@@ -501,6 +509,9 @@ GET e_commerce/_search
 }
 ```
 Expected response from Elasticsearch:
+
+Elasticsearch creates buckets for every month and shows the number of documents grouped into each bucket. 
+![image](https://user-images.githubusercontent.com/60980933/114788691-2a1d5d00-9d3f-11eb-8801-25dbbb5119ae.png)
 
 #### Histogram Aggregations
 Histogram aggregations can be applied to any numerical field. 
