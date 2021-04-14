@@ -34,7 +34,7 @@ Copy and paste these queries into Dev Tools in Kibana and run these queries in o
 
 These queries will create a new index and set the data types of each field into types conducive to aggregations we will perform in this workshop(Step 1). Then,we copy the data from our original index to the new index we have just created(Step 2). Last two steps(Steps 3 & 4) removes outliers that skew our data. 
 
-STEP 1: Create a new index called ecommerce_data and assign data types to the fields you expect this index to store. 
+**STEP 1: Create a new index called ecommerce_data and assign data types to the fields you expect this index to store.** 
 ```
 PUT ecommerce_data
 {
@@ -72,7 +72,7 @@ PUT ecommerce_data
   }
 }
 ```   
-STEP 2: Copy documents from the original index you added E-commerce data to(source) to the ecommerce_data index you just created(destination).
+**STEP 2: Copy documents from the original index you added E-commerce data to(source) to the ecommerce_data index you just created(destination).**
 ```
 POST _reindex
 {
@@ -85,7 +85,7 @@ POST _reindex
 }
 ```
 
-STEP 3: Use delete_by_query to delete all UnitPrice values less than 1. 
+**STEP 3: Use delete_by_query to delete all UnitPrice values less than 1.** 
 ```
 POST ecommerce_data/_delete_by_query
 {
@@ -99,7 +99,7 @@ POST ecommerce_data/_delete_by_query
 }
 ```
 
-STEP 4:Use delete_by_query to delete all UnitPrice values greater than 500. 
+**STEP 4:Use delete_by_query to delete all UnitPrice values greater than 500.**
 ```
 POST ecommerce_data/_delete_by_query
 {
@@ -145,7 +145,7 @@ GET Enter_name_of_the_index_here/_search
 {
   "aggs" or "aggregations": {
     "Name your aggregations report here": {
-      "Specify aggregation type here": {
+      "Name the metric type here": {
         "field": "Name the field you want to aggregate on here"
       }
     }
@@ -154,7 +154,7 @@ GET Enter_name_of_the_index_here/_search
 ```
 
 ### Metric Aggregations 
-`Metric`aggregations are used to compute numeric values based on your dataset. It can be used to calculate values of `sum`,`min`, `max`, `avg`, `percentiles` and unique count(`cardinality`). 
+`Metric`aggregations are used to compute numeric values based on your dataset. It can be used to calculate values of `sum`,`min`, `max`, `avg`, and unique count(`cardinality`). 
 
 #### Compute the `sum` of all unit prices in the data set
 
@@ -165,7 +165,7 @@ GET Enter_name_of_the_index_here/_search
   "aggs" or "aggregations": {
     "Name your aggregations report here": {
       "sum": {
-        "field": "Name the field you want to aggregate here"
+        "field": "Name the field you want to aggregate on here"
       }
     }
   }
@@ -214,7 +214,7 @@ Expected response from Elasticsearch:
 
 Now you do not need to minimize hits to get to the aggregations report! We will be adding the size parameter to all aggregations request from this point on. 
 
-![image](https://user-images.githubusercontent.com/60980933/114757369-034c3000-9d19-11eb-94e7-7231ee95327b.png)
+![image](https://user-images.githubusercontent.com/60980933/114758361-1c091580-9d1a-11eb-94df-58afa67e20c4.png)
 
 #### Compute the lowest(`min`) unit price of an item 
 
@@ -226,7 +226,7 @@ GET Enter_name_of_the_index_here/_search
   "aggs" or "aggregations": {
     "Name your aggregation here": {
       "min": {
-        "field": "Name the field you want to aggregate here"
+        "field": "Name the field you want to aggregate on here"
       }
     }
   }
@@ -234,13 +234,13 @@ GET Enter_name_of_the_index_here/_search
 ```
 Example: 
 ```
-GET e_commerce/_search
+GET ecommerce_data/_search
 {
   "size": 0,
   "aggs": {
     "lowest_unit_price": {
       "min": {
-        "field":"UnitPrice"
+        "field": "UnitPrice"
       }
     }
   }
@@ -260,7 +260,7 @@ GET Enter_name_of_the_index_here/_search
   "aggs" or "aggregations": {
     "Name your aggregation here": {
       "max": {
-        "field": "Name the field you want to aggregate here"
+        "field": "Name the field you want to aggregate on here"
       }
     }
   }
@@ -268,13 +268,13 @@ GET Enter_name_of_the_index_here/_search
 ```
 Example: 
 ```
-GET e_commerce/_search
+GET ecommerce_data/_search
 {
   "size": 0,
   "aggs": {
     "highest_unit_price": {
       "max": {
-        "field":"UnitPrice"
+        "field": "UnitPrice"
       }
     }
   }
@@ -294,7 +294,7 @@ GET Enter_name_of_the_index_here/_search
   "aggs" or "aggregations": {
     "Name your aggregation here": {
       "avg": {
-        "field": "Name the field you want to aggregate here"
+        "field": "Name the field you want to aggregate on here"
       }
     }
   }
@@ -302,13 +302,13 @@ GET Enter_name_of_the_index_here/_search
 ```
 Example: 
 ```
-GET e_commerce/_search
+GET ecommerce_data/_search
 {
   "size": 0,
   "aggs": {
     "average_unit_price": {
       "avg": {
-        "field":"UnitPrice"
+        "field": "UnitPrice"
       }
     }
   }
@@ -320,7 +320,7 @@ Average unit price in our invetory is around 4.39.
 
 ![image](https://user-images.githubusercontent.com/60980933/112511759-58b7a180-8d58-11eb-811f-8d6cb852c220.png)
 
-#### `Stats` Aggregation: Analyze the data to compute all the main metrics(count, min, max, avg, sum) in one request. 
+#### `Stats` Aggregation: Compute all of the main metrics(count, min, max, avg, sum) in one go
 Syntax:
 ```
 GET Enter_name_of_the_index_here/_search
@@ -329,7 +329,7 @@ GET Enter_name_of_the_index_here/_search
   "aggs" or "aggregations": {
     "Name your aggregation here": {
       "stats": {
-        "field": "Name the field you want to aggregate here"
+        "field": "Name the field you want to aggregate on here"
       }
     }
   }
@@ -337,7 +337,7 @@ GET Enter_name_of_the_index_here/_search
 ```
 Example:
 ```
-GET e_commerce/_search
+GET ecommerce_data/_search
 {
   "size": 0,
   "aggs": {
@@ -353,72 +353,35 @@ Expected Response from Elasticsearch:
 
 Stats aggregation will yield the values of `count`(the number of unit prices aggregation was performed on), `min`, `max`, `avg`, and `sum`(sum of all unit prices in the data set). 
 
-![image](https://user-images.githubusercontent.com/60980933/112512994-84875700-8d59-11eb-938a-fb7c61aee2b2.png)
+![image](https://user-images.githubusercontent.com/60980933/114769078-f20a2000-9d26-11eb-9827-e7672cbba158.png)
 
-#### The Percentiles Aggregations
-The percentiles aggregations computes the percentile values of data set. 
-What if you wanted to know what percentage of your data set falls under certain values?
-i.e. What unit price fall under 25%, 50%, 75% percentile? 
-
-Syntax:
-```
-GET Enter_name_of_the_index_here/_search
-{
-  "size": 0,
-  "aggs": {
-     "Name your aggregation here": {
-      "percentiles": {
-        "field":"Name the field you want to aggregate here",
-        "percents": [
-          "List the percentile",
-          "List the percentile",
-          "List the percentile"
-        ]
-      }
-    }
-  }
-}
-```
-Example: 
-```
-GET e_commerce/_search
-{
-  "size": 0,
-  "aggs": {
-    "unit_price_percentiles": {
-      "percentiles": {
-        "field":"UnitPrice",
-        "percents": [
-          25,
-          50,
-          75
-        ]
-      }
-    }
-  }
-}
-```
-
-Expected response from Elasticsearch:
-![image](https://user-images.githubusercontent.com/60980933/112532003-e81b7f80-8d6d-11eb-9f1f-e34145bced86.png)
-
-25% of unit price values are less than 1.65.
-50% of unit price values are less than 2.89.
-75% of unit price values are less than 4.95.
 
 #### The Cardinality Aggregations
 The cardinality aggregation computes the count of unique values for a given field. 
-Please note that the count is approximated.
 
+Syntax:
+```
+GET Enter_name_of_the_index_here
+{
+  "size": 0,
+  "aggs" or "aggregations": {
+    "Name your aggregation here": {
+      "cardinality": {
+        "field": "Name the field you want to aggregate on here"
+      }
+    }
+  }
+}
+```
 Example: 
 ```
-GET e_commerce/_search
+GET ecommerce_data/_search
 {
   "size": 0,
   "aggs": {
-    "number_of_customers": {
+    "number_unique_customers": {
       "cardinality": {
-        "field":"CustomerID"
+        "field": "CustomerID"
       }
     }
   }
@@ -427,15 +390,15 @@ GET e_commerce/_search
 Expected response from Elasticsearch: 
 
 Approximately, there are 4325 unique number of customers in our data set. 
-![image](https://user-images.githubusercontent.com/60980933/112532216-2add5780-8d6e-11eb-9649-edd1c38dbd44.png)
+![image](https://user-images.githubusercontent.com/60980933/114774709-aeff7b00-9d2d-11eb-9da5-8faf0dc87292.png)
 
-#### Aggregations Scope: Analyze the data to compute the average unit price of items sold in Germany
+#### Limiting the scope of an aggregation: Compute the average unit price of items sold in Germany
 
-In the previous example, the aggregation was run on all the documents in the e_commerce index. What happens if you want to run an aggregation on a subset of the documents? 
+In previous examples, aggregations were performed on all documents in the ecommerce_data index. What happens if you want to run an aggregation on a subset of the documents? 
 
-For example, our e-commerce index contains e-commerce data from multiple European countries. What if you want to focus on the average of unit price of items sold in Germany? 
+For example, our ecommerce_data index contains e-commerce data from multiple European countries. What if you want to focus on the average of unit price of items sold in Germany? 
 
-To limit the scope of the query, a query clause can be added to an aggregation. The query defines the subset of documents that aggregations should be ran. 
+To limit the scope of the aggregation, a query clause can be added to the request. The query clause defines the subset of documents that aggregations should be performed on.  
 
 The combined query and aggregations look like the following: 
 
@@ -445,7 +408,9 @@ GET Enter_name_of_the_index_here/_search
 {
   "size": 0,
   "query": {
-    "Enter match or match_phrase here": { "Enter the name of the field": "Enter the value you are looking for" }
+    "Enter match or match_phrase here": {
+      "Enter the name of the field": "Enter the value you are looking for"
+    }
   },
   "aggregations": {
     "Name your aggregation here": {
@@ -481,7 +446,7 @@ Expected response from Elasticsearch:
 The average of unit price of items sold in Germany is 4.58.
 ![image](https://user-images.githubusercontent.com/60980933/112534501-c1ab1380-8d70-11eb-9ce7-507953cc26d0.png)
 
-The combination of query and aggregation allowed us to perform aggregations on A SUBSET of documents. What if we wanted to perform aggreations on SEVERAL SUBSETS of documents? 
+The combination of query and aggregation allowed us to perform aggregations on a subset of documents. What if we wanted to perform aggreations on several subsets of documents? 
 
 This is where Bucket Aggregations come into play! 
 
