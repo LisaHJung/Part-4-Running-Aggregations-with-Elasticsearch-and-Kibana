@@ -30,7 +30,7 @@ By the end of this workshop, you will be able to run:
 [Elastic America Virtual Chapter](https://community.elastic.co/amer-virtual/): Want to attend live workshops? Join the Elastic Americal Virtual Chapter to get the deets!
 
 ## Preparing the dataset for aggregations
-Often times, the original dataset will not be optimal for performing aggregations in its original state. 
+Often times, the dataset will not be optimal for performing aggregations in its original state. 
 
 For example, the data type of a field has may not be recognized by Elasticsearch or the dataset may contain a value in a field that do not belong in that field and etc. 
 
@@ -295,6 +295,7 @@ The highest unit price of an item is 498.79.
 ![image](https://user-images.githubusercontent.com/60980933/112511189-cca57a00-8d57-11eb-9ab3-809b2a410636.png)
 
 #### Compute the `average` unit price of items in the inventory 
+
 Syntax:
 ```
 GET Enter_name_of_the_index_here/_search
@@ -329,7 +330,8 @@ Average unit price in our invetory is around 4.39.
 
 ![image](https://user-images.githubusercontent.com/60980933/112511759-58b7a180-8d58-11eb-811f-8d6cb852c220.png)
 
-#### `Stats` Aggregation: Compute all of the main metrics(count, min, max, avg, sum) in one go
+#### `Stats` Aggregation: Compute the count, min, max, avg, sum in one go
+
 Syntax:
 ```
 GET Enter_name_of_the_index_here/_search
@@ -659,7 +661,7 @@ Expected response from Elasticsearch:
 #### The Terms Aggregation
 The terms aggregation creates a new bucket for every unique term it encouters for the specified field. It is often used to find most frequently found terms in a document. 
 
-For example, what if you wanted to identify your top 5 customers with highest number of transactions? 
+For example, what if you wanted to identify your 5 customers with highest number of transactions? 
 Syntax:
 ```
 GET Enter_name_of_the_index_here/_search
