@@ -25,7 +25,7 @@ By the end of this workshop, you will be able to run:
 
 [Presentation]()
 
-[E-commerce Dataset](https://www.kaggle.com/carrie1/ecommerce-data) from Kaggle used for workshop
+[E-commerce Dataset](https://www.kaggle.com/carrie1/ecommerce-data) from Kaggle
 
 [Elastic America Virtual Chapter](https://community.elastic.co/amer-virtual/): Want to attend live workshops? Join the Elastic Americal Virtual Chapter to get the deets!
 
