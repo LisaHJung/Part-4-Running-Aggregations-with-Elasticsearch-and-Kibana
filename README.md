@@ -29,12 +29,12 @@ By the end of this workshop, you will be able to run:
 
 [Elastic America Virtual Chapter](https://community.elastic.co/amer-virtual/): Want to attend live workshops? Join the Elastic Americal Virtual Chapter to get the deets!
 
-## Preparing the data set
-Copy and paste these queries into Dev Tools in Kibana and run these queries in order specified below. 
+## Preparing the dataset for aggregations
+Copy and paste these requests into Dev Tools in Kibana and run these queries in order specified below. 
 
-These queries will create a new index and set the data types of each field into types conducive to aggregations we will perform in this workshop(Step 1). Then,we copy the data from our original index to the new index we have just created(Step 2). Last two steps(Steps 3 & 4) removes outliers that skew our data. 
+These requests will create a new index and set the data types of each field into types conducive to aggregations we will perform in this workshop(Step 1). Then,we copy the data from our original index to the new index we have just created(Step 2). Last two steps(Steps 3 & 4) removes outliers that skew our data. 
 
-**STEP 1: Create a new index called ecommerce_data and assign data types to the fields you expect this index to store.** 
+**STEP 1: Create a new index(ecommerce_data) with the following mapping.** 
 ```
 PUT ecommerce_data
 {
@@ -72,7 +72,7 @@ PUT ecommerce_data
   }
 }
 ```   
-**STEP 2: Copy documents from the original index you added E-commerce data to(source) to the ecommerce_data index you just created(destination).**
+**STEP 2: Reindex the data from original index(source) to the one you just created(destination).**
 ```
 POST _reindex
 {
@@ -85,14 +85,17 @@ POST _reindex
 }
 ```
 
-**STEP 3: Use delete_by_query to delete all UnitPrice values less than 1.** 
+**STEP 3: Remove negative values from unit_price field.
+
+When you explore the minimum unit price in this dataset, you will see that the minimum unit price value is -11062.06. To keep our data simple, I used the delete_by_query API to remove unit prices less than 0. 
+
 ```
 POST ecommerce_data/_delete_by_query
 {
   "query": {
     "range": {
       "UnitPrice": {
-        "lte": 1
+        "lte": 0
       }
     }
   }
@@ -100,6 +103,8 @@ POST ecommerce_data/_delete_by_query
 ```
 
 **STEP 4:Use delete_by_query to delete all UnitPrice values greater than 500.**
+
+When you explore the maximum unit price in this dataset, you will see that the maximum unit price value is 38970. When the data is manually examined, majority of the unit prices are less than 500. The max value of 38970 would have skewed the average. To simplify our demo, I used the delete_by_query API to remove unit prices greater than 500.
 ```
 POST ecommerce_data/_delete_by_query
 {
