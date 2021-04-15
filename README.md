@@ -30,16 +30,21 @@ By the end of this workshop, you will be able to run:
 [Elastic America Virtual Chapter](https://community.elastic.co/amer-virtual/): Want to attend live workshops? Join the Elastic Americal Virtual Chapter to get the deets!
 
 ## Preparing the dataset for aggregations
-Copy and paste these requests into Dev Tools in Kibana and run these queries in order specified below. 
 
-These requests will create a new index and set the data types of each field into types conducive to aggregations we will perform in this workshop(Step 1). Then,we copy the data from our original index to the new index we have just created(Step 2). Last two steps(Steps 3 & 4) removes outliers that skew our data. 
+Often times, the original dataset will not be optimal for performing aggregations in its original state. 
+
+For example, the data type of a field has may not be recognized by Elasticsearch or the dataset may contain a value in a field that do not belong in that field and etc. 
+
+Those are exact problems that I ran into while working with this dataset so the following are the requests that I sent to yield the responses shared during the workshop. 
+
+Copy and paste these requests into Dev Tools in Kibana and run these queries in order specified below. 
 
 **STEP 1: Create a new index(ecommerce_data) with the following mapping.** 
 ```
 PUT ecommerce_data
 {
   "mappings": {
-    "_meta": {
+    "meta": {
       "created_by": "ml-file-data-visualizer"
     },
     "properties": {
@@ -85,7 +90,7 @@ POST _reindex
 }
 ```
 
-**STEP 3: Remove negative values from unit_price field.
+**STEP 3: Remove negative values from unit_price field.**
 
 When you explore the minimum unit price in this dataset, you will see that the minimum unit price value is -11062.06. To keep our data simple, I used the delete_by_query API to remove unit prices less than 0. 
 
