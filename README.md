@@ -30,6 +30,11 @@ By the end of this workshop, you will be able to run:
 [Elastic America Virtual Chapter](https://community.elastic.co/amer-virtual/): Want to attend live workshops? Join the Elastic Americal Virtual Chapter to get the deets!
 
 ## Preparing the dataset for aggregations
+Often times, the original dataset will not be optimal for performing aggregations in its original state. 
+
+For example, the data type of a field has may not be recognized by Elasticsearch or the dataset may contain a value in a field that do not belong in that field and etc. 
+
+Those are exact problems that I ran into while working with this dataset. The following are the requests that I sent to yield the results shared during the workshop. 
 
 Copy and paste these requests into Dev Tools in Kibana and run these queries in order specified below. 
 
