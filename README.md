@@ -696,22 +696,49 @@ Elasticsearch will return top 5 customer IDs with the highest number of transact
 ![image](https://user-images.githubusercontent.com/60980933/114796514-6906df00-9d4e-11eb-862e-ac8eed4a10e2.png)
 
 ### Combining Aggregations
-Some questions need a combination of aggregation to be answered. What is the sum of revenue per day? 
+Some questions need a combination of aggregations to be answered. 
+
+What is the sum of revenue per day? 
+
 This requires both metric and buckets aggregation. 
 
 #### Daily revenue
 ```
+GET ecommerce_data/_search
+{
+  "size": 0,
+  "aggs": {
+    "transactions_per_day": {
+      "date_histogram": {
+        "field": "InvoiceDate",
+        "calendar_interval": "day"
+      },
+      "aggs": {
+        "daily_revenue": {
+          "sum": {
+            "script": {
+              "source": "doc['UnitPrice'].value * doc['Quantity'].value"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+```
 GET e_commerce_2/_search
 {
   "size": 0,
   "aggs": {
-    "orders_by_day": {
+    "daily_revenue": {
       "date_histogram": {
         "field":"InvoiceDate",
         "calendar_interval": "day"
       },
       "aggs": {
-        "daily_revenue": {
+        "sum_total_revenue_from_transactions": {
           "sum": {
             "script": {
               "source": 
@@ -724,60 +751,27 @@ GET e_commerce_2/_search
   }
 }
 ```
-Split the documents into daily buckets. multiply unitprice and quantity of each document than get the sum of it. To do this, create a new aggregation inside the first aggregation. 
-This new aggregation compute the sum of the field unitprice and quantity on every bueckt. 
 
-Each bucket - orders by day
-alson contains the sub aggregation called daily revenue
-
-```
-GET e_commerce_2/_search
-{
-  "size": 0,
-  "aggs": {
-    "orders_by_day": {
-      "date_histogram": {
-        "field":"InvoiceDate",
-        "calendar_interval": "day"
-      },
-      "aggs": {
-        "daily_revenue": {
-          "sum": {
-            "script": {
-              "source": 
-                "doc['UnitPrice'].value * doc['Quantity'].value"
-            }
-          }
-        }
-      }
-    }
-  }
-}
-```
-
-Response from Elasticsearch:
+Expected Response from Elasticsearch:
+![image](https://user-images.githubusercontent.com/60980933/115085623-0df8f780-9ec8-11eb-81a5-a2da7d5759c1.png)
 
 #### Calculating multiple metrics per bucket
-Caluculate daily revenue also add unique number of customer per day, add cardinality aggregation inside the daily historgram aggregation
+Calculate daily revenue also add unique number of customer per day, add cardinality aggregation inside the daily historgram aggregation
 ```
-GET e_commerce_2/_search
+GET ecommerce_data/_search
 {
   "size": 0,
   "aggs": {
-    "orders_by_day": {
+    "transactions_per_day": {
       "date_histogram": {
-        "field":"InvoiceDate",
-        "calendar_interval": "day",
-        "order": {
-          "daily_revenue": "desc"
-        }
+        "field": "InvoiceDate",
+        "calendar_interval": "day"
       },
       "aggs": {
         "daily_revenue": {
           "sum": {
             "script": {
-              "inline":
-                "doc['UnitPrice'].value * doc['Quantity'].value"
+              "source": "doc['UnitPrice'].value * doc['Quantity'].value"
             }
           }
         },
@@ -791,6 +785,8 @@ GET e_commerce_2/_search
   }
 }
 ```
+Expected Response from Elasticsearch:
+![image](https://user-images.githubusercontent.com/60980933/115086712-08041600-9eca-11eb-9afe-43923477b371.png)
 
 #### Creating multiple subuckets
 month and country and monthly revenue per country
