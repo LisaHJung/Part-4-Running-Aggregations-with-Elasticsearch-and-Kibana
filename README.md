@@ -1,5 +1,5 @@
 # Beginner's Crash Course to Elastic Stack Series
-## Part 4: Running Aggregations with Elasticsearch andKibana
+## Part 4: Running Aggregations with Elasticsearch and Kibana
 Welcome to the Beginner's Crash Course to Elastic Stack!
 
 This repo contains all resources shared during Part 4: Running Aggregations with Elasticsearch and Kibana.
