@@ -152,18 +152,17 @@ Syntax:
 ```
 GET Enter_name_of_the_index_here/_search
 {
-  "aggs" or "aggregations": {
-    "Name your aggregations report here": {
-      "Name the metric type here": {
+  "aggs": {
+    "Name your aggregations here": {
+      "Name your aggregation type here": {
         "field": "Name the field you want to aggregate on here"
       }
     }
   }
 }
 ```
-
 ### Metric Aggregations 
-`Metric`aggregations are used to compute numeric values based on your dataset. It can be used to calculate values of `sum`,`min`, `max`, `avg`, and unique count(`cardinality`). 
+`Metric`aggregations are used to compute numeric values based on your dataset. It can be used to calculate values of `sum`,`min`, `max`, `avg`, unique count(`cardinality`) and etc.  
 
 #### Compute the `sum` of all unit prices in the data set
 
@@ -171,8 +170,8 @@ Syntax:
 ```
 GET Enter_name_of_the_index_here/_search
 {
-  "aggs" or "aggregations": {
-    "Name your aggregations report here": {
+  "aggs": {
+    "Name your aggregations here": {
       "sum": {
         "field": "Name the field you want to aggregate on here"
       }
@@ -232,8 +231,8 @@ Syntax:
 GET Enter_name_of_the_index_here/_search
 {
   "size": 0,
-  "aggs" or "aggregations": {
-    "Name your aggregation here": {
+  "aggs": {
+    "Name your aggregations here": {
       "min": {
         "field": "Name the field you want to aggregate on here"
       }
@@ -266,8 +265,8 @@ Syntax:
 GET Enter_name_of_the_index_here/_search
 {
   "size": 0,
-  "aggs" or "aggregations": {
-    "Name your aggregation here": {
+  "aggs": {
+    "Name your aggregations here": {
       "max": {
         "field": "Name the field you want to aggregate on here"
       }
@@ -301,8 +300,8 @@ Syntax:
 GET Enter_name_of_the_index_here/_search
 {
   "size": 0,
-  "aggs" or "aggregations": {
-    "Name your aggregation here": {
+  "aggs": {
+    "Name your aggregations here": {
       "avg": {
         "field": "Name the field you want to aggregate on here"
       }
@@ -337,8 +336,8 @@ Syntax:
 GET Enter_name_of_the_index_here/_search
 {
   "size": 0,
-  "aggs" or "aggregations": {
-    "Name your aggregation here": {
+  "aggs": {
+    "Name your aggregations here": {
       "stats": {
         "field": "Name the field you want to aggregate on here"
       }
@@ -376,7 +375,7 @@ GET Enter_name_of_the_index_here
 {
   "size": 0,
   "aggs" or "aggregations": {
-    "Name your aggregation here": {
+    "Name your aggregations here": {
       "cardinality": {
         "field": "Name the field you want to aggregate on here"
       }
@@ -407,7 +406,7 @@ Approximately, there are 4325 unique number of customers in our data set.
 
 In previous examples, aggregations were performed on all documents in the ecommerce_data index. What happens if you want to run an aggregation on a subset of the documents? 
 
-For example, our ecommerce_data index contains e-commerce data from multiple countries. What if you want to focus on the average of unit price of items sold in Germany? 
+For example, our index contains e-commerce data from multiple countries. What if you want to focus on the average unit price of items sold in Germany? 
 
 To limit the scope of the aggregation, a query clause can be added to the request. The query clause defines the subset of documents that aggregations should be performed on.  
 
@@ -424,8 +423,8 @@ GET Enter_name_of_the_index_here/_search
     }
   },
   "aggregations": {
-    "Name your aggregation here": {
-      "Specify aggregation type here": {
+    "Name your aggregations here": {
+      "Specify aggregations type here": {
         "field": "Name the field you want to aggregate here"
       }
     }
@@ -434,7 +433,7 @@ GET Enter_name_of_the_index_here/_search
 ```
 Example: 
 ```
-GET e_commerce/_search
+GET ecommerce_data/_search
 {
   "size": 0,
   "query": {
@@ -445,13 +444,12 @@ GET e_commerce/_search
   "aggs": {
     "germany_average_unit_price": {
       "avg": {
-        "field":"UnitPrice"
+        "field": "UnitPrice"
       }
     }
   }
 }
 ```
-
 Expected response from Elasticsearch:
 
 The average of unit price of items sold in Germany is 4.58.
