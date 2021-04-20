@@ -460,8 +460,9 @@ The combination of query and aggregation allowed us to perform aggregations on a
 This is where Bucket Aggregations come into play! 
 
 ###  Bucket Aggregations
-Bucket aggregations group documents into several sets of documents called buckets. 
-Buckets are collections of documents that share a common criteria.
+When you want to aggregate on several subsets of documents, bucket aggregations come in handy. Bucket aggregations group documents into several sets of documents called bucket based on a common criteria.  
+
+![image](https://user-images.githubusercontent.com/60980933/115422110-d2a54400-a1b9-11eb-919c-15a88f9d148b.png)
 
 The following are different types of bucket aggregations. 
 
@@ -477,7 +478,7 @@ There are two ways to define the time interval.
 1. `Fixed_interval`
 2. `Calendar_interval`
 
-1. `Fixed_interval`:The inverval is always constant
+`Fixed_interval`:The inverval is always constant
 Example: Create a bucket for every seven days. 
 
 Syntax:
@@ -512,12 +513,14 @@ GET ecommerce_data/_search
 }
 ```
 Expected response from Elasticsearch:
-Elasticsearch creates a bucket for every 7 days and hows the number of documents grouped into each bucket. 
+Elasticsearch creates a bucket for every 7 days and shows the number of documents grouped into each bucket. 
 
 ![image](https://user-images.githubusercontent.com/60980933/114788575-f17d8380-9d3e-11eb-90e0-bcee2c7209dd.png)
 
-2. `Calendar_interval`: The interval may vary.
-Ex. Create a bucket for each month
+`Calendar_interval`: The interval may vary.
+
+Ex. Create a bucket for each month.
+
 Some months have different number of days!
 
 Syntax:
@@ -525,7 +528,7 @@ Syntax:
 GET ecommerce_data/_search
 {
   "size": 0,
-  "aggs" or "aggregations": {
+  "aggs": {
     "Name your aggregation here": {
       "date_histogram": {
         "field":"Name the field you want to aggregate on here",
@@ -557,16 +560,16 @@ Elasticsearch creates a bucket for each month and shows the number of documents 
 ![image](https://user-images.githubusercontent.com/60980933/114789926-170b8c80-9d41-11eb-941f-0c6f82311349.png)
 
 #### Histogram Aggregations
-`The histogram aggregations` is similar to the `date_histogram` aggregation. However, it can be applied to any numerical field given that your intervals have the same preset size.
+The `histogram aggregations` creates buckets based on any numerical interval. 
 
-Ex. Create a bucket for increasing interval by $5 
+Ex. Create a bucket for each price interval that increment by $10
 
 Syntax: 
 ```
 GET ecommerce_data/_search
 {
   "size": 0,
-  "aggs" or "aggregations": {
+  "aggs": {
     "Name your aggregation here": {
       "histogram": {
         "field":"Name the field you want to aggregate on here",
@@ -582,10 +585,10 @@ GET ecommerce_data/_search
 {
   "size": 0,
   "aggs": {
-    "preset_price_range": {
+    "transactions_per_price_interval": {
       "histogram": {
         "field": "UnitPrice",
-        "interval": 5
+        "interval": 10
       }
     }
   }
@@ -599,14 +602,13 @@ Expected response from Elasticsearch:
 ### The Range Aggregation 
 Histogram aggregations requires that your intervals have the same preset size. If your use case requires that you define your own intervals(i.e. custom intervals or intervals of varying sizes), the `range aggregation` comes in handy!  
 
-For example, what if you wanted to know how many transactions occurred for items whose unit prices between minimum value and $50 or between $50-$200, or greater than $200? 
-
+For example, what if you wanted to know how many transactions occurred for items whose unit prices between minimum value and $50, between $50-$200, and between $200 and up? 
 Syntax:
 ```
 GET Enter_name_of_the_index_here/_search
 {
   "size": 0,
-  "aggs" or "aggregations": {
+  "aggs": {
    "Name your aggregation here": {
       "range": {
         "field": "Name the field you want to aggregate on here",
@@ -633,7 +635,7 @@ GET ecommerce_data/_search
 {
   "size": 0,
   "aggs": {
-    "custom_price_ranges": {
+    "transactions_per_custom_price_ranges": {
       "range": {
         "field": "UnitPrice",
         "ranges": [
@@ -659,12 +661,13 @@ Expected response from Elasticsearch:
 #### The Terms Aggregation
 The terms aggregation creates a new bucket for every unique term it encouters for the specified field. It is often used to find most frequently found terms in a document. 
 
-For example, what if you wanted to identify your 5 customers with highest number of transactions? 
+For example, what if you wanted to identify your 5 customers with highest number of transactions?
+
 Syntax:
 ```
 GET Enter_name_of_the_index_here/_search
 {
-  "aggregations": {
+  "aggs": {
     "Name your aggregation here": {
       "terms": {
         "field": "Name the field you want to aggregate on here",
@@ -754,7 +757,9 @@ Expected Response from Elasticsearch:
 ![image](https://user-images.githubusercontent.com/60980933/115085623-0df8f780-9ec8-11eb-81a5-a2da7d5759c1.png)
 
 #### Calculating multiple metrics per bucket
-Calculate daily revenue also add unique number of customer per day, add cardinality aggregation inside the daily historgram aggregation
+Get the daily revenue and the number of unique customers per day. 
+
+Example: 
 ```
 GET ecommerce_data/_search
 {
@@ -773,7 +778,7 @@ GET ecommerce_data/_search
             }
           }
         },
-        "unique_customers_per_day": {
+        "number_of_unique_customers_per_day": {
           "cardinality": {
             "field": "CustomerID"
           }
