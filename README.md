@@ -366,7 +366,7 @@ Stats aggregation will yield the values of `count`(the number of unit prices agg
 ![image](https://user-images.githubusercontent.com/60980933/114769078-f20a2000-9d26-11eb-9827-e7672cbba158.png)
 
 
-#### The Cardinality Aggregations
+#### The Cardinality Aggregation
 The cardinality aggregation computes the count of unique values for a given field. 
 
 Syntax:
@@ -467,9 +467,9 @@ When you want to aggregate on several subsets of documents, bucket aggregations 
 The following are different types of bucket aggregations. 
 
 1. Date Histogram Aggregation
-2. Histogram Aggregations
+2. Histogram Aggregation
 3. Range Aggregation
-4. Terms aggregations
+4. Terms aggregation
 
 #### 1.The Date Histogram Aggregation
 When you collect data over time (i.e. transaction data over a year), you may be able to gain valuable insights if you can group documents based on a given time interval. 
@@ -504,19 +504,20 @@ GET ecommerce_data/_search
 {
   "size": 0,
   "aggs": {
-    "transactions_by_week": {
+    "transactions_by_24_hrs": {
       "date_histogram": {
         "field": "InvoiceDate",
-        "fixed_interval": "7d"
+        "fixed_interval": "24h"
       }
     }
   }
 }
 ```
 Expected response from Elasticsearch:
-Elasticsearch creates a bucket for every 7 days and shows the number of documents grouped into each bucket. 
 
-![image](https://user-images.githubusercontent.com/60980933/114788575-f17d8380-9d3e-11eb-90e0-bcee2c7209dd.png)
+Elasticsearch creates a bucket for every 24 hours and shows the number of documents grouped into each bucket. 
+
+![image](https://user-images.githubusercontent.com/60980933/115631609-60b92180-a2c3-11eb-82ce-c1b56c120d10.png)
 
 `Calendar_interval`: The interval may vary.
 
@@ -558,12 +559,12 @@ GET ecommerce_data/_search
 ```
 Expected response from Elasticsearch:
 
-Elasticsearch creates a bucket for each month and shows the number of documents that fall within the time range. 
+Elasticsearch creates a bucket for each month and shows the number of documents that fall within the time range.  
 
 ![image](https://user-images.githubusercontent.com/60980933/114789926-170b8c80-9d41-11eb-941f-0c6f82311349.png)
 
-#### Histogram Aggregations
-The `histogram aggregations` creates buckets based on any numerical interval. 
+#### Histogram Aggregation
+The `histogram aggregation` creates buckets based on any numerical interval. 
 
 Ex. Create a bucket for each price interval that increment by $10
 
@@ -602,7 +603,9 @@ Expected response from Elasticsearch:
 
 ![image](https://user-images.githubusercontent.com/60980933/114792177-107f1400-9d45-11eb-8595-580e524c9b39.png)
 
-Like the histogram aggregations, range aggregations allow you to create buckets based on any numerical interval. It differs in that it allows you to define intervals of varying sizes so you can customized it to your use case.  
+#### Range Aggregation
+
+Like the histogram aggregation, range aggregation allow you to create buckets based on any numerical interval. It differs in that it allows you to define intervals of varying sizes so you can customized it to your use case.  
 
 For example, what if you wanted to know the number of transactions for items priced between 0 and $50, between $50-$200, and between $200 and up? 
 
