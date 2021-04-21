@@ -325,7 +325,7 @@ GET ecommerce_data/_search
 ```
 Expected response from Elasticsearch: 
 
-Average unit price in our invetory is around 4.39.
+The average unit price in our invetory is around 4.39.
 
 ![image](https://user-images.githubusercontent.com/60980933/112511759-58b7a180-8d58-11eb-811f-8d6cb852c220.png)
 
@@ -402,7 +402,7 @@ Expected response from Elasticsearch:
 Approximately, there are 4325 unique number of customers in our data set. 
 ![image](https://user-images.githubusercontent.com/60980933/114774709-aeff7b00-9d2d-11eb-9da5-8faf0dc87292.png)
 
-#### Limiting the scope of an aggregation: Compute the average unit price of items sold in Germany
+#### Limiting the scope of an aggregation
 
 In previous examples, aggregations were performed on all documents in the ecommerce_data index. What happens if you want to run an aggregation on a subset of the documents? 
 
@@ -478,7 +478,8 @@ There are two ways to define the time interval.
 1. `Fixed_interval`
 2. `Calendar_interval`
 
-`Fixed_interval`:The inverval is always constant
+`Fixed_interval`:The inverval is always constant.
+
 Example: Create a bucket for every seven days. 
 
 Syntax:
@@ -486,7 +487,7 @@ Syntax:
 GET ecommerce_data/_search
 {
   "size": 0,
-  "aggs" or "aggregations": {
+  "aggs": {
     "Name your aggregation here": {
       "date_histogram": {
         "field":"Name the field you want to aggregate on here",
@@ -518,6 +519,8 @@ Elasticsearch creates a bucket for every 7 days and shows the number of document
 ![image](https://user-images.githubusercontent.com/60980933/114788575-f17d8380-9d3e-11eb-90e0-bcee2c7209dd.png)
 
 `Calendar_interval`: The interval may vary.
+
+The calendar interval takes into account that daylight savings changes the length of specific days, months have different number of days, and leap seconds can be tacked onto a particular year. 
 
 Ex. Create a bucket for each month.
 
@@ -570,7 +573,7 @@ GET ecommerce_data/_search
 {
   "size": 0,
   "aggs": {
-    "Name your aggregation here": {
+    "Name your aggregations here": {
       "histogram": {
         "field":"Name the field you want to aggregate on here",
         "interval": Specify the interval here
@@ -599,17 +602,17 @@ Expected response from Elasticsearch:
 
 ![image](https://user-images.githubusercontent.com/60980933/114792177-107f1400-9d45-11eb-8595-580e524c9b39.png)
 
-### The Range Aggregation 
-Histogram aggregations requires that your intervals have the same preset size. If your use case requires that you define your own intervals(i.e. custom intervals or intervals of varying sizes), the `range aggregation` comes in handy!  
+Like the histogram aggregations, range aggregations allow you to create buckets based on any numerical interval. It differs in that it allows you to define intervals of varying sizes so you can customized it to your use case.  
 
-For example, what if you wanted to know how many transactions occurred for items whose unit prices between minimum value and $50, between $50-$200, and between $200 and up? 
+For example, what if you wanted to know the number of transactions for items priced between 0 and $50, between $50-$200, and between $200 and up? 
+
 Syntax:
 ```
 GET Enter_name_of_the_index_here/_search
 {
   "size": 0,
   "aggs": {
-   "Name your aggregation here": {
+   "Name your aggregations here": {
       "range": {
         "field": "Name the field you want to aggregate on here",
         "ranges": [
@@ -668,7 +671,7 @@ Syntax:
 GET Enter_name_of_the_index_here/_search
 {
   "aggs": {
-    "Name your aggregation here": {
+    "Name your aggregations here": {
       "terms": {
         "field": "Name the field you want to aggregate on here",
         "size": State how many top results you want returned here
