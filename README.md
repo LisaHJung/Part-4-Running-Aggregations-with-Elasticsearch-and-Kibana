@@ -561,7 +561,7 @@ Expected response from Elasticsearch:
 
 Elasticsearch creates a bucket for each month and shows the number of documents that fall within the time range.  
 
-![image](https://user-images.githubusercontent.com/60980933/114789926-170b8c80-9d41-11eb-941f-0c6f82311349.png)
+![image](https://user-images.githubusercontent.com/60980933/115707200-b9bca000-a32b-11eb-8d33-f089e5616b90.png)
 
 #### Histogram Aggregation
 The `histogram aggregation` creates buckets based on any numerical interval. 
