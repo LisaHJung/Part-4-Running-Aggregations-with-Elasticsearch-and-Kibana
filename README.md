@@ -365,7 +365,6 @@ Stats aggregation will yield the values of `count`(the number of unit prices agg
 
 ![image](https://user-images.githubusercontent.com/60980933/114769078-f20a2000-9d26-11eb-9827-e7672cbba158.png)
 
-
 #### The Cardinality Aggregation
 The cardinality aggregation computes the count of unique values for a given field. 
 
@@ -504,10 +503,10 @@ GET ecommerce_data/_search
 {
   "size": 0,
   "aggs": {
-    "transactions_by_24_hrs": {
+    "transactions_by_8_hrs": {
       "date_histogram": {
         "field": "InvoiceDate",
-        "fixed_interval": "24h"
+        "fixed_interval": "8h"
       }
     }
   }
@@ -515,17 +514,15 @@ GET ecommerce_data/_search
 ```
 Expected response from Elasticsearch:
 
-Elasticsearch creates a bucket for every 24 hours and shows the number of documents grouped into each bucket. 
+Elasticsearch creates a bucket for every 8 hours and shows the number of documents grouped into each bucket. 
 
-![image](https://user-images.githubusercontent.com/60980933/115631609-60b92180-a2c3-11eb-82ce-c1b56c120d10.png)
+![image](https://user-images.githubusercontent.com/60980933/115752687-927bc800-a357-11eb-8ded-77038d9d11fa.png)
 
 `Calendar_interval`: The interval may vary.
 
-The calendar interval takes into account that daylight savings changes the length of specific days, months have different number of days, and leap seconds can be tacked onto a particular year. 
+Daylight savings changes the length of specific days, months have different number of days, and leap seconds can be tacked onto a particular year. 
 
-Ex. Create a bucket for each month.
-
-Some months have different number of days!
+Ex. Split data into monthly buckets.
 
 Syntax:
 ```
@@ -559,14 +556,13 @@ GET ecommerce_data/_search
 ```
 Expected response from Elasticsearch:
 
-Elasticsearch creates a bucket for each month and shows the number of documents that fall within the time range.  
-
+Elasticsearch creates monthly buckets and shows the number of documents that fall within the time range.  
 ![image](https://user-images.githubusercontent.com/60980933/115707200-b9bca000-a32b-11eb-8d33-f089e5616b90.png)
 
 #### Histogram Aggregation
 The `histogram aggregation` creates buckets based on any numerical interval. 
 
-Ex. Create a bucket for each price interval that increment by $10
+Ex. Create a bucket for each price interval that increases in increments of 10
 
 Syntax: 
 ```
@@ -601,11 +597,11 @@ GET ecommerce_data/_search
 
 Expected response from Elasticsearch:
 
-![image](https://user-images.githubusercontent.com/60980933/114792177-107f1400-9d45-11eb-8595-580e524c9b39.png)
+![image](https://user-images.githubusercontent.com/60980933/115754790-cf48be80-a359-11eb-82c8-128033e452cf.png)
 
 #### Range Aggregation
 
-Like the histogram aggregation, range aggregation allow you to create buckets based on any numerical interval. It differs in that it allows you to define intervals of varying sizes so you can customized it to your use case.  
+Like the histogram aggregation, range aggregation allows you to create buckets based on any numerical interval. It differs in that it allows you to define intervals of varying sizes so you can customize it to your use case.  
 
 For example, what if you wanted to know the number of transactions for items priced between 0 and $50, between $50-$200, and between $200 and up? 
 
@@ -699,6 +695,7 @@ GET ecommerce_data/_search
 }
 ```
 Expected response from Elasticsearch:
+
 Elasticsearch will return top 5 customer IDs with the highest number of transaction documents. 
 ![image](https://user-images.githubusercontent.com/60980933/114796514-6906df00-9d4e-11eb-862e-ac8eed4a10e2.png)
 
@@ -709,7 +706,7 @@ What is the sum of revenue per day?
 
 This requires both metric and buckets aggregation. 
 
-#### Daily revenue
+#### Calculate the daily revenue
 ```
 GET ecommerce_data/_search
 {
@@ -725,31 +722,6 @@ GET ecommerce_data/_search
           "sum": {
             "script": {
               "source": "doc['UnitPrice'].value * doc['Quantity'].value"
-            }
-          }
-        }
-      }
-    }
-  }
-}
-```
-
-```
-GET e_commerce_2/_search
-{
-  "size": 0,
-  "aggs": {
-    "daily_revenue": {
-      "date_histogram": {
-        "field":"InvoiceDate",
-        "calendar_interval": "day"
-      },
-      "aggs": {
-        "sum_total_revenue_from_transactions": {
-          "sum": {
-            "script": {
-              "source": 
-                "doc['UnitPrice'].value * doc['Quantity'].value"
             }
           }
         }
@@ -796,47 +768,4 @@ GET ecommerce_data/_search
 ```
 Expected Response from Elasticsearch:
 ![image](https://user-images.githubusercontent.com/60980933/115086712-08041600-9eca-11eb-9afe-43923477b371.png)
-
-#### Creating multiple subuckets
-month and country and monthly revenue per country
-```
-GET e_commerce_2/_search
-{
-  "size": 0,
-  "aggs": {
-    "by_country": {
-      "terms": {
-        "field": "Country",
-        "order": {
-          "total_revenue": "desc"
-        }
-      },
-        "aggs": {
-          "total_revenue": {
-            "sum": {
-              "script": {
-                "inline": "doc['UnitPrice'].value * doc['Quantity'].value"
-              }
-            }
-          },
-          "orders_by_month": {
-            "date_histogram": {
-              "field": "InvoiceDate",
-              "calendar_interval": "month"
-            },
-            "aggs": {
-              "monthly_revenue": {
-                "sum": {
-                  "script": {
-                    "inline": "doc['UnitPrice'].value * doc['Quantity'].value"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-```
 
