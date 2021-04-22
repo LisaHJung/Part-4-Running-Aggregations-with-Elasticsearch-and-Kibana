@@ -30,13 +30,13 @@ By the end of this workshop, you will be able to run:
 [Elastic America Virtual Chapter](https://community.elastic.co/amer-virtual/): Want to attend live workshops? Join the Elastic Americal Virtual Chapter to get the deets!
 
 ## Set up data within Elasticsearch
-Often times, the dataset will not be optimal for performing aggregations in its original state. 
+Often times, the dataset will not be optimal for runningn requests in its original state. 
 
 For example, the data type of a field has may not be recognized by Elasticsearch or the dataset may contain a value in a field that do not belong in that field and etc. 
 
 Those are exact problems that I ran into while working with this dataset. The following are the requests that I sent to yield the results shared during the workshop. 
 
-Copy and paste these requests into Dev Tools in Kibana and run these queries in order specified below. 
+Copy and paste these requests into the Kibana console(Dev Tools) and run these requests in the order shown below. 
 
 **STEP 1: Create a new index(ecommerce_data) with the following mapping.** 
 ```
