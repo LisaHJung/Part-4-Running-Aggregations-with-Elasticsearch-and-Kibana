@@ -29,7 +29,7 @@ By the end of this workshop, you will be able to run:
 
 [Elastic America Virtual Chapter](https://community.elastic.co/amer-virtual/): Want to attend live workshops? Join the Elastic Americal Virtual Chapter to get the deets!
 
-## Preparing the dataset for aggregations
+## Set up data within Elasticsearch
 Often times, the dataset will not be optimal for performing aggregations in its original state. 
 
 For example, the data type of a field has may not be recognized by Elasticsearch or the dataset may contain a value in a field that do not belong in that field and etc. 
