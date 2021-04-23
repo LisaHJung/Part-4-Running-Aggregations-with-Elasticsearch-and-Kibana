@@ -147,14 +147,14 @@ Elasticsearch displays a number of hits(line 12) and a sample of 10 search resul
 
 ![image](https://user-images.githubusercontent.com/60980933/112375185-9c52d280-8ca8-11eb-9952-16f24171dfbd.png)
 
-## Aggregations Requests
+## Aggregations Request
 Syntax:
 ```
 GET Enter_name_of_the_index_here/_search
 {
   "aggs": {
     "Name your aggregations here": {
-      "Name your aggregation type here": {
+      "Specify the aggregation type here": {
         "field": "Name the field you want to aggregate on here"
       }
     }
@@ -204,6 +204,8 @@ When you minimize hits(red box- line 10), you will see the aggregations report w
 
 If the purpose of running an aggregation is solely to get the values of aggregations, you can add the size parameter and set it to 0 as shown below. This parameter will prevent Elasticsearch from fetching the top 10 documents and speed up the query. 
 
+**Using a size parameter**
+
 Example:
 ```
 GET ecommerce_data/_search
@@ -220,7 +222,7 @@ GET ecommerce_data/_search
 ```
 Expected response from Elasticsearch:
 
-Now you do not need to minimize hits to get to the aggregations report! We will be adding the size parameter to all aggregations request from this point on. 
+Now you do not need to minimize hits to get to the aggregations resulst! We will be adding the size parameter to all aggregations requests from this point on. 
 
 ![image](https://user-images.githubusercontent.com/60980933/114758361-1c091580-9d1a-11eb-94df-58afa67e20c4.png)
 
@@ -296,7 +298,7 @@ The highest unit price of an item is 498.79.
 
 ![image](https://user-images.githubusercontent.com/60980933/112511189-cca57a00-8d57-11eb-9ab3-809b2a410636.png)
 
-#### Compute the `average` unit price of items in the inventory 
+#### Compute the `average` unit price of items in the index
 
 Syntax:
 ```
@@ -368,9 +370,9 @@ Stats aggregation will yield the values of `count`(the number of unit prices agg
 
 ![image](https://user-images.githubusercontent.com/60980933/114769078-f20a2000-9d26-11eb-9827-e7672cbba158.png)
 
-#### The Cardinality Aggregation
+#### `Cardinality` Aggregation
 
-The cardinality aggregation computes the count of unique values for a given field. 
+The `cardinality aggregation` computes the count of unique values for a given field. 
 
 Syntax:
 ```
@@ -402,7 +404,7 @@ GET ecommerce_data/_search
 ```
 Expected response from Elasticsearch: 
 
-Approximately, there are 4325 unique number of customers in our data set. 
+Approximately, there are 4325 unique number of customers in our index.  
 ![image](https://user-images.githubusercontent.com/60980933/114774709-aeff7b00-9d2d-11eb-9da5-8faf0dc87292.png)
 
 #### Limiting the scope of an aggregation
@@ -474,7 +476,7 @@ The following are different types of bucket aggregations.
 3. Range Aggregation
 4. Terms aggregation
 
-#### 1.The Date Histogram Aggregation
+#### 1.Date Histogram Aggregation
 When you collect data over time (i.e. transaction data over a year), you may be able to gain valuable insights if you can group documents based on a given time interval. 
 
 There are two ways to define the time interval.
@@ -483,7 +485,7 @@ There are two ways to define the time interval.
 
 `Fixed_interval`:The inverval is always constant.
 
-Example: Create a bucket for every seven days. 
+Example: Create a bucket for every 8 hour interval. 
 
 Syntax:
 ```
