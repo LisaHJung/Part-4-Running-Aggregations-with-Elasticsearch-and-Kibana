@@ -260,6 +260,7 @@ The lowest unit price of an item is 1.01.
 ![image](https://user-images.githubusercontent.com/60980933/112509885-869be680-8d56-11eb-9c2e-5935ff7437e8.png)
 
 #### Compute the highest(`max`) unit price of an item 
+
 Syntax:
 ```
 GET Enter_name_of_the_index_here/_search
@@ -275,6 +276,7 @@ GET Enter_name_of_the_index_here/_search
 }
 ```
 Example: 
+
 ```
 GET ecommerce_data/_search
 {
@@ -289,6 +291,7 @@ GET ecommerce_data/_search
 }
 ```
 Expected response from Elasticsearch:
+
 The highest unit price of an item is 498.79. 
 
 ![image](https://user-images.githubusercontent.com/60980933/112511189-cca57a00-8d57-11eb-9ab3-809b2a410636.png)
@@ -325,7 +328,7 @@ GET ecommerce_data/_search
 ```
 Expected response from Elasticsearch: 
 
-The average unit price in our invetory is around 4.39.
+The average unit price in our invetory is ~4.39.
 
 ![image](https://user-images.githubusercontent.com/60980933/112511759-58b7a180-8d58-11eb-811f-8d6cb852c220.png)
 
@@ -366,6 +369,7 @@ Stats aggregation will yield the values of `count`(the number of unit prices agg
 ![image](https://user-images.githubusercontent.com/60980933/114769078-f20a2000-9d26-11eb-9827-e7672cbba158.png)
 
 #### The Cardinality Aggregation
+
 The cardinality aggregation computes the count of unique values for a given field. 
 
 Syntax:
@@ -451,7 +455,7 @@ GET ecommerce_data/_search
 ```
 Expected response from Elasticsearch:
 
-The average of unit price of items sold in Germany is 4.58.
+The average of unit price of items sold in Germany is ~4.58.
 ![image](https://user-images.githubusercontent.com/60980933/112534501-c1ab1380-8d70-11eb-9ce7-507953cc26d0.png)
 
 The combination of query and aggregation allowed us to perform aggregations on a subset of documents. What if we wanted to perform aggreations on several subsets of documents? 
@@ -601,7 +605,7 @@ Expected response from Elasticsearch:
 
 #### Range Aggregation
 
-Like the histogram aggregation, range aggregation allows you to create buckets based on any numerical interval. It differs in that it allows you to define intervals of varying sizes so you can customize it to your use case.  
+Like the `histogram aggregation`, `range aggregation` allows you to create buckets based on any numerical interval. It differs in that it allows you to define intervals of varying sizes so you can customize it to your use case.  
 
 For example, what if you wanted to know the number of transactions for items priced between 0 and $50, between $50-$200, and between $200 and up? 
 
@@ -660,8 +664,8 @@ GET ecommerce_data/_search
 Expected response from Elasticsearch:
 ![image](https://user-images.githubusercontent.com/60980933/114792261-44f2d000-9d45-11eb-9298-6bae6dcf8f06.png)
 
-#### The Terms Aggregation
-The terms aggregation creates a new bucket for every unique term it encouters for the specified field. It is often used to find most frequently found terms in a document. 
+#### Terms Aggregation
+The `terms aggregation` creates a new bucket for every unique term it encouters for the specified field. It is often used to find most frequently found terms in a document. 
 
 For example, what if you wanted to identify your 5 customers with highest number of transactions?
 
@@ -699,7 +703,7 @@ Expected response from Elasticsearch:
 Elasticsearch will return top 5 customer IDs with the highest number of transaction documents. 
 ![image](https://user-images.githubusercontent.com/60980933/114796514-6906df00-9d4e-11eb-862e-ac8eed4a10e2.png)
 
-### Combining Aggregations
+### Combined Aggregations
 Some questions need a combination of aggregations to be answered. 
 
 What is the sum of revenue per day? 
