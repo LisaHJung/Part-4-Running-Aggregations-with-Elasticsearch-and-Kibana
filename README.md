@@ -565,6 +565,30 @@ Expected response from Elasticsearch:
 Elasticsearch creates monthly buckets and shows the number of documents that fall within the time range.  
 ![image](https://user-images.githubusercontent.com/60980933/115707200-b9bca000-a32b-11eb-8d33-f089e5616b90.png)
 
+**Bucket sorting**
+Example:
+```
+GET ecommerce_data/_search
+{
+  "size": 0,
+  "aggs": {
+    "transactions_by_month": {
+      "date_histogram": {
+        "field": "InvoiceDate",
+        "calendar_interval": "1M",
+        "order": {
+          "_key": "desc"
+        }
+      }
+    }
+  }
+}
+```
+Expected response from Elasticsearch:
+You will see that buckets are sorted in a descending manner. The first bucket is from 12/1/2011 and it descends down! 
+
+![image](https://user-images.githubusercontent.com/60980933/115941140-72383000-a461-11eb-90c2-a86cc1ae8233.png)
+
 #### Histogram Aggregation
 The `histogram aggregation` creates buckets based on any numerical interval. 
 
