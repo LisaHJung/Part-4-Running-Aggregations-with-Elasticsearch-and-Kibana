@@ -565,7 +565,11 @@ Expected response from Elasticsearch:
 Elasticsearch creates monthly buckets and shows the number of documents that fall within the time range.  
 ![image](https://user-images.githubusercontent.com/60980933/115707200-b9bca000-a32b-11eb-8d33-f089e5616b90.png)
 
-**Bucket sorting**
+**Bucket sorting for date histogram aggregation**
+
+By default, date histogram aggregation sorts buckets based on the `_key`
+values in ascending manner. 
+
 Example:
 ```
 GET ecommerce_data/_search
@@ -629,6 +633,34 @@ Expected response from Elasticsearch:
 
 ![image](https://user-images.githubusercontent.com/60980933/115754790-cf48be80-a359-11eb-82c8-128033e452cf.png)
 
+**Bucket sorting for histogram aggregation**
+
+By default, the histogram aggregation sorts buckets based on the `_key`
+values in ascending order. 
+
+Example:
+```
+GET ecommerce_data/_search
+{
+  "size": 0,
+  "aggs": {
+    "transactions_per_price_interval": {
+      "histogram": {
+        "field": "UnitPrice",
+        "interval": 10,
+        "order": {
+          "_key": "desc"
+        }
+      }
+    }
+  }
+}
+```
+Expected response from Elasticsearch:
+You will see that buckets are now sorted in descending order of price range. 
+
+![image](https://user-images.githubusercontent.com/60980933/116111564-01b52d00-a674-11eb-99a1-3891718d414c.png)g)
+
 #### Range Aggregation
 
 Like the `histogram aggregation`, `range aggregation` allows you to create buckets based on any numerical interval. It differs in that it allows you to define intervals of varying sizes so you can customize it to your use case.  
@@ -690,6 +722,10 @@ GET ecommerce_data/_search
 Expected response from Elasticsearch:
 ![image](https://user-images.githubusercontent.com/60980933/114792261-44f2d000-9d45-11eb-9298-6bae6dcf8f06.png)
 
+**Bucket sorting for range aggregation**
+
+The range aggregation sorted based on the input ranges you specify and it cannot be sorted! 
+
 #### Terms Aggregation
 The `terms aggregation` creates a new bucket for every unique term it encouters for the specified field. It is often used to find most frequently found terms in a document. 
 
@@ -728,6 +764,34 @@ Expected response from Elasticsearch:
 
 Elasticsearch will return top 5 customer IDs with the highest number of transaction documents. 
 ![image](https://user-images.githubusercontent.com/60980933/114796514-6906df00-9d4e-11eb-862e-ac8eed4a10e2.png)
+
+**Bucket sorting for terms aggregation**
+
+By default, the terms aggregation sorts buckets based on the `_count`
+values in descending order. 
+
+Example:
+```
+GET ecommerce_data/_search
+{
+  "size": 0,
+  "aggs": {
+    "customers_with_lowest_number_of_transactions": {
+      "terms": {
+        "field": "CustomerID",
+        "size": 5,
+        "order": {
+          "_count": "asc"
+        }
+      }
+    }
+  }
+}
+```
+Expected response from Elasticsearch:
+You will see that buckets are now sorted in descending order of document count. 
+
+![image](https://user-images.githubusercontent.com/60980933/116112778-1e9e3000-a675-11eb-8230-7d8f00b41d98.png)
 
 ### Combined Aggregations
 Some questions need a combination of aggregations to be answered. 
@@ -799,3 +863,38 @@ GET ecommerce_data/_search
 Expected Response from Elasticsearch:
 ![image](https://user-images.githubusercontent.com/60980933/115086712-08041600-9eca-11eb-9afe-43923477b371.png)
 
+** Sorting by metric value of a sub-aggregation**
+```
+GET ecommerce_data/_search
+{
+  "size": 0,
+  "aggs": {
+    "transactions_per_day": {
+      "date_histogram": {
+        "field": "InvoiceDate",
+        "calendar_interval": "day",
+        "order": {
+          "daily_revenue": "desc"
+        }
+      },
+      "aggs": {
+        "daily_revenue": {
+          "sum": {
+            "script": {
+              "source": "doc['UnitPrice'].value * doc['Quantity'].value"
+            }
+          }
+        },
+        "number_of_unique_customers_per_day": {
+          "cardinality": {
+            "field": "CustomerID"
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+Expected response from Elasticsearch:
+![image](https://user-images.githubusercontent.com/60980933/116132063-5794cf80-a68a-11eb-9e85-f129054cacb2.png)
