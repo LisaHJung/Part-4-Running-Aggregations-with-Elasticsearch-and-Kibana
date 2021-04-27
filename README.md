@@ -803,7 +803,7 @@ Expected response from Elasticsearch:
 
 You will see that buckets are now sorted in ascending order of doc_count, showing buckets with lowest doc_count first instead of last.  
 
-![image](https://user-images.githubusercontent.com/60980933/116112778-1e9e3000-a675-11eb-8230-7d8f00b41d98.png)
+![image](https://user-images.githubusercontent.com/60980933/116301597-77e18e80-a75d-11eb-835a-2fda2883bc5e.png)
 
 ### Combined Aggregations
 Some questions require a combination of aggregations to be answered. 
