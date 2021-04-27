@@ -15,7 +15,9 @@ By the end of this workshop, you will be able to run:
 
 ## Resources
 
-[Table of Contents: Beginner's Crash Course to Elastic Stack](https://github.com/LisaHJung/Beginners-Crash-Course-to-the-Elastic-Stack-Series) This workshop is a part of the Beginner's Crash Course to Elastic Stack series. Check out this table contents to access all the workshops in the series thus far. This table will continue to get updated as more workshops in the series are released! 
+[Table of Contents: Beginner's Crash Course to Elastic Stack](https://github.com/LisaHJung/Beginners-Crash-Course-to-the-Elastic-Stack-Series): 
+
+This workshop is a part of the Beginner's Crash Course to Elastic Stack series. Check out this table contents to access all the workshops in the series thus far. This table will continue to get updated as more workshops in the series are released! 
 
 [Free Elastic Cloud Trial](https://ela.st/elastic-beginners)
 
@@ -23,18 +25,20 @@ By the end of this workshop, you will be able to run:
 
 [Instructions](https://dev.to/elastic/downloading-elasticsearch-and-kibana-macos-linux-and-windows-1mmo) for downloading Elasticsearch and Kibana
 
-[Presentation]()
+[Presentation](https://github.com/LisaHJung/Part-4-Running-Aggregations-with-Elasticsearch-and-Kibana/blob/main/Part%204_%20Aggregations%20(2).pdf)
 
 [E-commerce Dataset](https://www.kaggle.com/carrie1/ecommerce-data) from Kaggle
 
-[Elastic America Virtual Chapter](https://community.elastic.co/amer-virtual/): Want to attend live workshops? Join the Elastic Americal Virtual Chapter to get the deets!
+[Elastic America Virtual Chapter](https://community.elastic.co/amer-virtual/): 
+
+Want to attend live workshops? Join the Elastic Americal Virtual Chapter to get the deets!
 
 ## Set up data within Elasticsearch
-Often times, the dataset will not be optimal for runningn requests in its original state. 
+Often times, the dataset is not optimal for running requests in its original state. 
 
-For example, the data type of a field has may not be recognized by Elasticsearch or the dataset may contain a value in a field that do not belong in that field and etc. 
+For example, the data type of a field has may not be recognized by Elasticsearch or the dataset may contain a value that was accidentally included in the wrong field and etc. 
 
-Those are exact problems that I ran into while working with this dataset. The following are the requests that I sent to yield the results shared during the workshop. 
+These are exact problems that I ran into while working with this dataset. The following are the requests that I sent to yield the results shared during the workshop. 
 
 Copy and paste these requests into the Kibana console(Dev Tools) and run these requests in the order shown below. 
 
@@ -88,10 +92,9 @@ POST _reindex
   }
 }
 ```
+**STEP 3: Remove negative values from the unit_price field.**
 
-**STEP 3: Remove negative values from unit_price field.**
-
-When you explore the minimum unit price in this dataset, you will see that the minimum unit price value is -11062.06. To keep our data simple, I used the delete_by_query API to remove unit prices less than 0. 
+When you explore the minimum unit price in this dataset, you will see that the minimum unit price value is -11062.06. To keep our data simple, I used the delete_by_query API to remove all unit prices less than 0. 
 
 ```
 POST ecommerce_data/_delete_by_query
@@ -106,9 +109,9 @@ POST ecommerce_data/_delete_by_query
 }
 ```
 
-**STEP 4:Use delete_by_query to delete all UnitPrice values greater than 500.**
+**STEP 4:Remove values greater than 500 from the unit_price field.**
 
-When you explore the maximum unit price in this dataset, you will see that the maximum unit price value is 38970. When the data is manually examined, majority of the unit prices are less than 500. The max value of 38970 would have skewed the average. To simplify our demo, I used the delete_by_query API to remove unit prices greater than 500.
+When you explore the maximum unit price in this dataset, you will see that the maximum unit price value is 38,970. When the data is manually examined, the majority of the unit prices are less than 500. The max value of 38,970 would skew the average. To simplify our demo, I used the delete_by_query API to remove unit prices greater than 500.
 ```
 POST ecommerce_data/_delete_by_query
 {
@@ -143,7 +146,7 @@ GET ecommerce_data/_search
 ```
 Expected response from Elasticsearch:
 
-Elasticsearch displays a number of hits(line 12) and a sample of 10 search results by default. The first search result(a document)is shown in lines 17-31.  The field "_ source"(line 22) lists all fields or content of the document.
+Elasticsearch displays a number of hits(line 12) and a sample of 10 search results by default. The first search result(a document)is shown in lines 17-31.  The field "_ source"(line 22) lists all the fields or content of the document.
 
 ![image](https://user-images.githubusercontent.com/60980933/112375185-9c52d280-8ca8-11eb-9952-16f24171dfbd.png)
 
@@ -202,7 +205,7 @@ When you minimize hits(red box- line 10), you will see the aggregations report w
 
 ![image](https://user-images.githubusercontent.com/60980933/114757167-c122ee80-9d18-11eb-9d7a-3856612c7de0.png)
 
-If the purpose of running an aggregation is solely to get the values of aggregations, you can add the size parameter and set it to 0 as shown below. This parameter will prevent Elasticsearch from fetching the top 10 documents and speed up the query. 
+If the purpose of running an aggregation is solely to get the aggregations results, you can add the size parameter and set it to 0 as shown below. This parameter will prevent Elasticsearch from fetching the top 10 documents and speed up the query. 
 
 **Using a size parameter**
 
@@ -222,7 +225,7 @@ GET ecommerce_data/_search
 ```
 Expected response from Elasticsearch:
 
-Now you do not need to minimize hits to get to the aggregations resulst! We will be adding the size parameter to all aggregations requests from this point on. 
+Now you do not need to minimize hits(line 10) to access aggregations results! We will be adding the size parameter to all aggregations requests from this point on. 
 
 ![image](https://user-images.githubusercontent.com/60980933/114758361-1c091580-9d1a-11eb-94df-58afa67e20c4.png)
 
@@ -330,7 +333,7 @@ GET ecommerce_data/_search
 ```
 Expected response from Elasticsearch: 
 
-The average unit price in our invetory is ~4.39.
+The average unit price of an item is ~4.39.
 
 ![image](https://user-images.githubusercontent.com/60980933/112511759-58b7a180-8d58-11eb-811f-8d6cb852c220.png)
 
@@ -366,7 +369,7 @@ GET ecommerce_data/_search
 ```
 Expected Response from Elasticsearch:
 
-Stats aggregation will yield the values of `count`(the number of unit prices aggregation was performed on), `min`, `max`, `avg`, and `sum`(sum of all unit prices in the data set). 
+The stats aggregation will yield the values of `count`(the number of unit prices aggregation was performed on), `min`, `max`, `avg`, and `sum`(sum of all unit prices in the index). 
 
 ![image](https://user-images.githubusercontent.com/60980933/114769078-f20a2000-9d26-11eb-9827-e7672cbba158.png)
 
@@ -379,7 +382,7 @@ Syntax:
 GET Enter_name_of_the_index_here
 {
   "size": 0,
-  "aggs" or "aggregations": {
+  "aggs": {
     "Name your aggregations here": {
       "cardinality": {
         "field": "Name the field you want to aggregate on here"
@@ -409,11 +412,11 @@ Approximately, there are 4325 unique number of customers in our index.
 
 #### Limiting the scope of an aggregation
 
-In previous examples, aggregations were performed on all documents in the ecommerce_data index. What happens if you want to run an aggregation on a subset of the documents? 
+In the previous examples, aggregations were performed on all documents in the ecommerce_data index. What if you want to run an aggregation on a subset of the documents? 
 
-For example, our index contains e-commerce data from multiple countries. What if you want to focus on the average unit price of items sold in Germany? 
+For example, our index contains e-commerce data from multiple countries. Let's say you want to calculate the average unit price of items sold in Germany.
 
-To limit the scope of the aggregation, a query clause can be added to the request. The query clause defines the subset of documents that aggregations should be performed on.  
+To limit the scope of the aggregation, you can add a query clause to the aggregations request. The query clause defines the subset of documents that aggregations should be performed on.  
 
 The combined query and aggregations look like the following: 
 
@@ -460,12 +463,12 @@ Expected response from Elasticsearch:
 The average of unit price of items sold in Germany is ~4.58.
 ![image](https://user-images.githubusercontent.com/60980933/112534501-c1ab1380-8d70-11eb-9ce7-507953cc26d0.png)
 
-The combination of query and aggregation allowed us to perform aggregations on a subset of documents. What if we wanted to perform aggreations on several subsets of documents? 
+The combination of query and aggregations request allowed us to perform aggregations on a subset of documents. What if we wanted to perform aggregations on several subsets of documents? 
 
 This is where Bucket Aggregations come into play! 
 
 ###  Bucket Aggregations
-When you want to aggregate on several subsets of documents, bucket aggregations come in handy. Bucket aggregations group documents into several sets of documents called bucket based on a common criteria.  
+When you want to aggregate on several subsets of documents, bucket aggregations will come in handy. Bucket aggregations group documents into several sets of documents called buckets. All documents in a bucket share a common criteria.  
 
 ![image](https://user-images.githubusercontent.com/60980933/115422110-d2a54400-a1b9-11eb-919c-15a88f9d148b.png)
 
@@ -476,10 +479,10 @@ The following are different types of bucket aggregations.
 3. Range Aggregation
 4. Terms aggregation
 
-#### 1.Date Histogram Aggregation
-When you collect data over time (i.e. transaction data over a year), you may be able to gain valuable insights if you can group documents based on a given time interval. 
+#### 1. Date Histogram Aggregation
+When you are looking to group data by time interval, the date histogram aggregation will become very useful! 
 
-There are two ways to define the time interval.
+There are two ways to define time interval with date histogram aggregations.
 1. `Fixed_interval`
 2. `Calendar_interval`
 
@@ -493,7 +496,7 @@ GET ecommerce_data/_search
 {
   "size": 0,
   "aggs": {
-    "Name your aggregation here": {
+    "Name your aggregations here": {
       "date_histogram": {
         "field":"Name the field you want to aggregate on here",
         "fixed_interval": "Specify the interval here"
@@ -520,7 +523,7 @@ GET ecommerce_data/_search
 ```
 Expected response from Elasticsearch:
 
-Elasticsearch creates a bucket for every 8 hours and shows the number of documents grouped into each bucket. 
+Elasticsearch creates a bucket for every 8 hours("key_as_string") and shows the number of documents("doc_count") grouped into each bucket. 
 
 ![image](https://user-images.githubusercontent.com/60980933/115752687-927bc800-a357-11eb-8ded-77038d9d11fa.png)
 
@@ -536,7 +539,7 @@ GET ecommerce_data/_search
 {
   "size": 0,
   "aggs": {
-    "Name your aggregation here": {
+    "Name your aggregations here": {
       "date_histogram": {
         "field":"Name the field you want to aggregate on here",
         "calendar_interval": "Specify the interval here"
@@ -562,13 +565,14 @@ GET ecommerce_data/_search
 ```
 Expected response from Elasticsearch:
 
-Elasticsearch creates monthly buckets and shows the number of documents that fall within the time range.  
+Elasticsearch creates monthly buckets. Within each bucket, the date(monthly interval) is listed for the field "key_as_string". "key" shows the same date represented as a timestamp. The number of documents that fall within the time interval is listed under "doc_count".  
+
 ![image](https://user-images.githubusercontent.com/60980933/115707200-b9bca000-a32b-11eb-8d33-f089e5616b90.png)
 
 **Bucket sorting for date histogram aggregation**
 
 By default, date histogram aggregation sorts buckets based on the `_key`
-values in ascending manner. 
+values in ascending order. To reverse this order, you can add an order parameter to the aggregation. Then specify that you want to sort buckets based on the `_key` values in descending(desc) order! 
 
 Example:
 ```
@@ -589,14 +593,15 @@ GET ecommerce_data/_search
 }
 ```
 Expected response from Elasticsearch:
-You will see that buckets are sorted in a descending manner. The first bucket is from 12/1/2011 and it descends down! 
+
+You will see that buckets are now sorted to return the most recent interval first intead of last. 
 
 ![image](https://user-images.githubusercontent.com/60980933/115941140-72383000-a461-11eb-90c2-a86cc1ae8233.png)
 
 #### Histogram Aggregation
 The `histogram aggregation` creates buckets based on any numerical interval. 
 
-Ex. Create a bucket for each price interval that increases in increments of 10
+Ex. Create a buckets based on price interval the increases in increments of 10. 
 
 Syntax: 
 ```
@@ -631,12 +636,14 @@ GET ecommerce_data/_search
 
 Expected response from Elasticsearch:
 
+Elasticsearch returns a buckets array where each bucket represents a price interval("key"). Each interval increases in increments of 10 in unit price. It also includes the number of documents placed in each bucket. 
+
 ![image](https://user-images.githubusercontent.com/60980933/115754790-cf48be80-a359-11eb-82c8-128033e452cf.png)
 
 **Bucket sorting for histogram aggregation**
 
 By default, the histogram aggregation sorts buckets based on the `_key`
-values in ascending order. 
+values in ascending order. To reverse this order, you can add an order parameter to the aggregation. Then specify that you want to sort buckets based on the `_key` values in descending(desc) order! 
 
 Example:
 ```
@@ -657,15 +664,16 @@ GET ecommerce_data/_search
 }
 ```
 Expected response from Elasticsearch:
-You will see that buckets are now sorted in descending order of price range. 
+
+You will see that buckets are now sorted to return the highest price interval first intead of last. 
 
 ![image](https://user-images.githubusercontent.com/60980933/116111564-01b52d00-a674-11eb-99a1-3891718d414c.png)g)
 
 #### Range Aggregation
 
-Like the `histogram aggregation`, `range aggregation` allows you to create buckets based on any numerical interval. It differs in that it allows you to define intervals of varying sizes so you can customize it to your use case.  
+`Range aggregation` is similar to `histogram aggregation` in that it can create buckets based on any numerical interval. It differs in that `range aggregation` allows you to define intervals of varying sizes so you can customize it to your use case.  
 
-For example, what if you wanted to know the number of transactions for items priced between 0 and $50, between $50-$200, and between $200 and up? 
+For example, what if you wanted to know the number of transactions for items from varying price ranges between 0 and $50, between $50-$200, and between $200 and up? 
 
 Syntax:
 ```
@@ -720,16 +728,19 @@ GET ecommerce_data/_search
 }
 ```
 Expected response from Elasticsearch:
+
+Elasticsearch returns a buckets array where each bucket represents a customized price interval("key"). It also includes the number of documents placed in each bucket. 
+
 ![image](https://user-images.githubusercontent.com/60980933/114792261-44f2d000-9d45-11eb-9298-6bae6dcf8f06.png)
 
 **Bucket sorting for range aggregation**
 
-The range aggregation sorted based on the input ranges you specify and it cannot be sorted! 
+The range aggregation is sorted based on the input ranges you specify and it cannot be sorted any other way! 
 
 #### Terms Aggregation
-The `terms aggregation` creates a new bucket for every unique term it encouters for the specified field. It is often used to find most frequently found terms in a document. 
+The `terms aggregation` creates a new bucket for every unique term it encouters for the specified field. It is often used to find the most frequently found terms in a document. 
 
-For example, what if you wanted to identify your 5 customers with highest number of transactions?
+For example, let's say you want to identify 5 customers with highest number of transactions. 
 
 Syntax:
 ```
@@ -762,13 +773,13 @@ GET ecommerce_data/_search
 ```
 Expected response from Elasticsearch:
 
-Elasticsearch will return top 5 customer IDs with the highest number of transaction documents. 
+Elasticsearch will return top 5 customer IDs with the highest number of transactions(documents). 
 ![image](https://user-images.githubusercontent.com/60980933/114796514-6906df00-9d4e-11eb-862e-ac8eed4a10e2.png)
 
 **Bucket sorting for terms aggregation**
 
 By default, the terms aggregation sorts buckets based on the `_count`
-values in descending order. 
+values in descending order. To reverse this order, you can add an order parameter to the aggregation. Then specify that you want to sort buckets based on the `_count` values in descending(desc) order! 
 
 Example:
 ```
@@ -789,16 +800,15 @@ GET ecommerce_data/_search
 }
 ```
 Expected response from Elasticsearch:
-You will see that buckets are now sorted in descending order of document count. 
+
+You will see that buckets are now sorted in descending order of doc_count. 
 
 ![image](https://user-images.githubusercontent.com/60980933/116112778-1e9e3000-a675-11eb-8230-7d8f00b41d98.png)
 
 ### Combined Aggregations
-Some questions need a combination of aggregations to be answered. 
+Some questions require a combination of aggregations to be answered. 
 
-What is the sum of revenue per day? 
-
-This requires both metric and buckets aggregation. 
+For example, to answer the question "What is the sum of revenue per day?", we need to combine metric and buckets aggregations. 
 
 #### Calculate the daily revenue
 ```
@@ -826,10 +836,14 @@ GET ecommerce_data/_search
 ```
 
 Expected Response from Elasticsearch:
+
+Elasticsearch returns an array of daily buckets. Within each bucket, it shows the number of documents within each bucket as well as the revenue generated from each day. 
+
 ![image](https://user-images.githubusercontent.com/60980933/115085623-0df8f780-9ec8-11eb-81a5-a2da7d5759c1.png)
 
 #### Calculating multiple metrics per bucket
-Get the daily revenue and the number of unique customers per day. 
+
+You can also calculate multiple metrics per bucket. For example, if you wanted to calculate the daily revenue and the number of unique customers per day in one go, you can add multiple metrics per bucket as shown below!  
 
 Example: 
 ```
@@ -861,9 +875,21 @@ GET ecommerce_data/_search
 }
 ```
 Expected Response from Elasticsearch:
+
+Elasticsearch returns an array of daily buckets. Within each bucket, you will see that the unique number of customers per day and daily revenue have been calculated for each day!
+
 ![image](https://user-images.githubusercontent.com/60980933/115086712-08041600-9eca-11eb-9afe-43923477b371.png)
 
-** Sorting by metric value of a sub-aggregation**
+**Sorting by metric value of a sub-aggregation**
+
+You do not always need to sort by dates, numerical intervals, or by doc_count! You can also sort by metric value of a sub-aggregation. 
+
+Let's take a look at the request below. Within the sub-aggregation, metric values daily_revenue and number_of_unique_customers_per_day are calculated. 
+
+Let's say you wanted to find which day had the highest daily revenue to date! 
+
+All you need to do is to add the order parameter and let Elasticsearch know that you want to sort by metric value of daily_revenue in descending order! 
+
 ```
 GET ecommerce_data/_search
 {
@@ -897,4 +923,7 @@ GET ecommerce_data/_search
 ```
 
 Expected response from Elasticsearch:
+
+You will see that the response is no longer sorted by date. The buckets are now sorted to return the highest daily revenue first! 
+
 ![image](https://user-images.githubusercontent.com/60980933/116132063-5794cf80-a68a-11eb-9e85-f129054cacb2.png)
