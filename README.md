@@ -787,7 +787,7 @@ GET ecommerce_data/_search
 {
   "size": 0,
   "aggs": {
-    "customers_with_lowest_number_of_transactions": {
+    "5_customers_with_lowest_number_of_transactions": {
       "terms": {
         "field": "CustomerID",
         "size": 5,
