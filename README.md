@@ -25,7 +25,7 @@ This workshop is a part of the Beginner's Crash Course to Elastic Stack series. 
 
 [Instructions](https://dev.to/elastic/downloading-elasticsearch-and-kibana-macos-linux-and-windows-1mmo) for downloading Elasticsearch and Kibana
 
-[Presentation](https://github.com/LisaHJung/Part-4-Running-Aggregations-with-Elasticsearch-and-Kibana/blob/main/Part%204_%20Aggregations%20(3).pdf)
+[Presentation slides](https://github.com/LisaHJung/Part-4-Running-Aggregations-with-Elasticsearch-and-Kibana/blob/main/Part%204_%20Aggregations%20(3).pdf)
 
 [E-commerce Dataset](https://www.kaggle.com/carrie1/ecommerce-data) from Kaggle
 
