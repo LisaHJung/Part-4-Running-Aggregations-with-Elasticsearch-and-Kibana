@@ -14,6 +14,7 @@ By the end of this workshop, you will be able to run:
 - combined aggregations
 
 **Live workshop attendees**
+
 The answers to questions asked during the live workshop are included [here](#Q-and-A-from-the-live-workshop)!
 
 ## Resources
