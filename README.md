@@ -949,6 +949,6 @@ Let's take 0-50 range for example. This range has a lower limit(0) and a upper l
 
 **3. What about Time Weighted Average, is it possible?**
 
-At present, Elasticsearch does not have a feature that automatically calculates the time weighted average. However, you can always write a script that represents the formula for calculating the time weighted average and include it in the aggregation. Here is a documentation on [how to write scripts](https://www.elastic.co/guide/en/elasticsearch/reference/current/modules-scripting-using.html)!  
+At present, Elasticsearch does not have a built in feature that automatically calculates the time weighted average. However, you can always write a script that represents the formula for calculating the time weighted average and include it in the aggregation. Here is a documentation on [how to write scripts](https://www.elastic.co/guide/en/elasticsearch/reference/current/modules-scripting-using.html)!  
 
 
