@@ -13,7 +13,8 @@ By the end of this workshop, you will be able to run:
 - buckets aggregations
 - combined aggregations
 
-Interested in the answers to questions asked during the live workshops? Click [here](#Q-and-A-from-the-live-workshop)
+**Live workshop attendees**
+The answers to questions asked during the live workshop are included [here](#Q-and-A-from-the-live-workshop)!
 
 ## Resources
 
