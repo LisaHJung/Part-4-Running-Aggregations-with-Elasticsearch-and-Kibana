@@ -53,9 +53,6 @@ Copy and paste these requests into the Kibana console(Dev Tools) and run these r
 PUT ecommerce_data
 {
   "mappings": {
-    "meta": {
-      "created_by": "ml-file-data-visualizer"
-    },
     "properties": {
       "Country": {
         "type": "keyword"
