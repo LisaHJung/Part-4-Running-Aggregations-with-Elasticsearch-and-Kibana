@@ -39,6 +39,8 @@ This workshop is a part of the Beginner's Crash Course to Elastic Stack series. 
 
 Want to attend live workshops? Join the Elastic Americal Virtual Chapter to get the deets!
 
+[What's next?](https://github.com/LisaHJung/Part-5-Understanding-Mapping-with-Elasticsearch-and-Kibana) Eager to continue your learning after mastering the concept from this workshop? Move on to Part 5: Understanding Mapping with Elasticsearch and Kibana [here](https://github.com/LisaHJung/Part-5-Understanding-Mapping-with-Elasticsearch-and-Kibana)!
+
 ## Set up data within Elasticsearch
 Often times, the dataset is not optimal for running requests in its original state. 
 
