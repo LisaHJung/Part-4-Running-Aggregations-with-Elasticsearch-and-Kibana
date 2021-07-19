@@ -44,7 +44,7 @@ Want to attend live workshops? Join the Elastic Americal Virtual Chapter to get 
 ## Set up data within Elasticsearch
 Often times, the dataset is not optimal for running requests in its original state. 
 
-For example, the data type of a field has may not be recognized by Elasticsearch or the dataset may contain a value that was accidentally included in the wrong field and etc. 
+For example, the type of a field may not be recognized by Elasticsearch or the dataset may contain a value that was accidentally included in the wrong field and etc. 
 
 These are exact problems that I ran into while working with this dataset. The following are the requests that I sent to yield the results shared during the workshop. 
 
