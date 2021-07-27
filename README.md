@@ -743,7 +743,7 @@ Elasticsearch returns a buckets array where each bucket represents a customized 
 The `range aggregation` is sorted based on the input ranges you specify and it cannot be sorted any other way! 
 
 #### Terms Aggregation
-The `terms aggregation` creates a new bucket for every unique term it encouters for the specified field. It is often used to find the most frequently found terms in a document. 
+The `terms aggregation` creates a new bucket for every unique term it encounters for the specified field. It is often used to find the most frequently found terms in a document. 
 
 For example, let's say you want to identify 5 customers with highest number of transactions(documents). 
 
