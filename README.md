@@ -835,7 +835,7 @@ To get the answer, we need to first split our data into daily buckets(`date_hist
  
 Within each bucket, we need to perform `metric aggregations` to calculate the daily revenue.
 
-![image](https://user-images.githubusercontent.com/60980933/136267326-5c40a7e1-86cf-4a02-8417-88beef7e98cb.png)
+![image](https://user-images.githubusercontent.com/60980933/136267632-7ef1e51b-56f6-4a94-b67d-a44eaabbe1bf.png)
 
 #### Calculate the daily revenue
 The combined `aggregations` request looks like the following:
