@@ -33,7 +33,7 @@ This workshop is a part of the Beginner's Crash Course to Elastic Stack series. 
 
 [Mini Beginner's Crash Course to Elasticsearch & Kibana playlist](https://ela.st/mini-beginners-crash-course)
 
-Do you prefer learning by watching shorter videos? Check out this playlist to watch short clips of beginner's crash course full length workshops. Season 2 clips will be uploaded here in the future! 
+Do you prefer learning by watching shorter videos? Check out this playlist to watch short clips of beginner's crash course full length workshops. Part 4 workshop is broken down into episodes 15-18. Season 2 clips will be uploaded here in the future! 
 
 [Presentation slides](https://github.com/LisaHJung/Part-4-Running-Aggregations-with-Elasticsearch-and-Kibana/blob/main/Part%204_%20Aggregations%20(3).pdf)
 
