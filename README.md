@@ -31,6 +31,10 @@ This workshop is a part of the Beginner's Crash Course to Elastic Stack series. 
 
 [Video Recording](https://www.youtube.com/watch?v=iGKOdep1Iss) of the workshop
 
+[Mini Beginner's Crash Course to Elasticsearch & Kibana playlist](https://ela.st/mini-beginners-crash-course)
+
+Do you prefer learning by watching shorter videos? Check out this playlist to watch short clips of beginner's crash course full length workshops. Season 2 clips will be uploaded here in the future! 
+
 [Presentation slides](https://github.com/LisaHJung/Part-4-Running-Aggregations-with-Elasticsearch-and-Kibana/blob/main/Part%204_%20Aggregations%20(3).pdf)
 
 [E-commerce Dataset](https://www.kaggle.com/carrie1/ecommerce-data) from Kaggle
