@@ -714,7 +714,7 @@ GET Enter_name_of_the_index_here/_search
             "to": y
           },
           {
-            "from": z
+            "from": y
           }
         ]
       }
